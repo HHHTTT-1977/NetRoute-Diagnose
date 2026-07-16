@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netroute-diagnose"
+version = "0.1.0"
+description = "Read-only DNS, egress, and Clash/OpenClash rule-path diagnostics"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "NetRoute-Diagnose contributors"}]
+keywords = ["clash", "openclash", "network", "dns", "diagnostics"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: System :: Networking",
+]
+dependencies = [
+  "PyYAML>=6.0,<7",
+  "dnspython>=2.4,<3",
+]
+
+[project.scripts]
+netroute-diagnose = "netroute_diagnose.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+netroute_diagnose = ["profiles/*.yaml"]

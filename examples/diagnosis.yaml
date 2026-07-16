@@ -1,0 +1,38 @@
+# Copy this file and adapt expectations to your own routing policy.
+version: 1
+
+dns:
+  nameservers: []
+  timeout: 3
+
+egress:
+  endpoint: https://api.ipify.org?format=json
+  timeout: 5
+  checks:
+    - name: system-route
+      mode: system
+      enabled: true
+    - name: clash-http-proxy
+      mode: proxy
+      proxy_url: http://127.0.0.1:7890
+      enabled: false
+
+apps:
+  - name: WeChat
+    domains:
+      - {domain: weixin.qq.com, expected: DIRECT}
+      - {domain: wechat.com, expected: DIRECT}
+  - name: Apple
+    domains:
+      - {domain: apple.com, expected: DIRECT}
+      - {domain: icloud.com, expected: DIRECT}
+      - {domain: api.smoot.apple.cn, expected: DIRECT}
+  - name: Google
+    domains:
+      - {domain: google.com, expected: PROXY}
+      - {domain: googleapis.com, expected: PROXY}
+  - name: OpenAI
+    domains:
+      - {domain: openai.com, expected: PROXY}
+      - {domain: api.openai.com, expected: PROXY}
+      - {domain: chatgpt.com, expected: PROXY}

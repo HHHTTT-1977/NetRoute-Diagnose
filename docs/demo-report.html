@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetRoute-Diagnose Report</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f7fb; --card:#fff; --text:#172033;
+      --muted:#64748b; --line:#dbe3ef; --accent:#2563eb; }
+    @media (prefers-color-scheme:dark) { :root { --bg:#0f172a; --card:#172033;
+      --text:#e5edf8; --muted:#9aabc2; --line:#334155; --accent:#60a5fa; } }
+    * { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--text);
+      font:14px/1.55 system-ui,-apple-system,sans-serif } main { max-width:1500px;
+      margin:auto; padding:32px } h1 { margin:0 } h2 { margin-top:0 }
+    .sub { color:var(--muted); margin:6px 0 24px } .grid { display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+      padding:18px; margin-bottom:18px; box-shadow:0 4px 16px #0000000a }
+    .metric strong { display:block; font-size:28px } .metric span { color:var(--muted) }
+    .table-wrap { overflow:auto } table { border-collapse:collapse; width:100%;
+      min-width:850px } th,td { border-bottom:1px solid var(--line); padding:10px;
+      text-align:left; vertical-align:top } th { color:var(--muted) }
+    code { overflow-wrap:anywhere } .badge { border-radius:999px; padding:3px 8px;
+      font-size:12px; font-weight:700 } .pass { background:#16a34a22; color:#16a34a }
+    .mismatch { background:#dc262622; color:#dc2626 } .uncertain { background:#d9770622;
+      color:#d97706 } .unknown { background:#64748b22; color:#64748b }
+    details pre { max-height:500px; overflow:auto; white-space:pre-wrap }
+  </style>
+</head>
+<body><main>
+  <h1>NetRoute-Diagnose</h1>
+  <p class="sub">Generated 2026-07-16T18:02:02+08:00 · Static rule analysis is not proof of runtime routing.</p>
+  <section class="grid">
+    <div class="card metric"><strong>10</strong><span>PASS</span></div>
+    <div class="card metric"><strong>0</strong><span>MISMATCH</span></div>
+    <div class="card metric"><strong>0</strong><span>UNCERTAIN</span></div>
+    <div class="card metric"><strong>0</strong><span>UNKNOWN</span></div>
+  </section>
+  <section class="card"><h2>Rule path checks / 规则路径检查</h2><div class="table-wrap">
+    <table><thead><tr><th>App</th><th>Domain</th><th>Expected</th><th>Actual</th>
+    <th>Status</th><th>Confidence</th><th>Matched rule</th><th>Notes</th></tr></thead>
+    <tbody><tr><td>WeChat</td><td><code>weixin.qq.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#6 <code>DOMAIN-SUFFIX,weixin.qq.com,DIRECT</code></td><td>—</td></tr><tr><td>WeChat</td><td><code>wechat.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#7 <code>DOMAIN-SUFFIX,wechat.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>apple.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#8 <code>DOMAIN-SUFFIX,apple.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>icloud.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#9 <code>DOMAIN-SUFFIX,icloud.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>api.smoot.apple.cn</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#10 <code>DOMAIN,api.smoot.apple.cn,DIRECT</code></td><td>—</td></tr><tr><td>Google</td><td><code>google.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#4 <code>DOMAIN-SUFFIX,google.com,PROXY</code></td><td>—</td></tr><tr><td>Google</td><td><code>googleapis.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#5 <code>DOMAIN-SUFFIX,googleapis.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>openai.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#2 <code>DOMAIN-SUFFIX,openai.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>api.openai.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#1 <code>DOMAIN,api.openai.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>chatgpt.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#3 <code>DOMAIN-SUFFIX,chatgpt.com,PROXY</code></td><td>—</td></tr></tbody></table></div></section>
+  <section class="card"><h2>DNS checks / DNS 检测</h2><div class="table-wrap">
+    <table><thead><tr><th>Domain</th><th>Resolver</th><th>Addresses</th>
+    <th>ms</th><th>Error</th></tr></thead><tbody><tr><td colspan="5">Skipped</td></tr></tbody>
+    </table></div></section>
+  <section class="card"><h2>Egress checks / 出口检测</h2><div class="table-wrap">
+    <table><thead><tr><th>Name</th><th>Mode</th><th>IP</th><th>Endpoint</th>
+    <th>ms</th><th>Error</th></tr></thead><tbody><tr><td colspan="6">Skipped</td></tr></tbody>
+    </table></div></section>
+  <section class="card"><h2>Warnings / 警告</h2><ul><li>Offline mode: DNS and egress checks were skipped; route results are static rule analysis only.</li></ul></section>
+  <section class="card"><details><summary>Raw diagnostic data / 原始诊断数据</summary>
+    <pre>{
+  &quot;generated_at&quot;: &quot;2026-07-16T18:02:02+08:00&quot;,
+  &quot;source_config&quot;: &quot;diagnosis.yaml&quot;,
+  &quot;clash_config&quot;: &quot;clash-config.yaml&quot;,
+  &quot;offline&quot;: true,
+  &quot;dns_results&quot;: [],
+  &quot;egress_results&quot;: [],
+  &quot;domain_checks&quot;: [
+    {
+      &quot;app&quot;: &quot;WeChat&quot;,
+      &quot;domain&quot;: &quot;weixin.qq.com&quot;,
+      &quot;expected&quot;: &quot;DIRECT&quot;,
+      &quot;actual&quot;: &quot;DIRECT&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;weixin.qq.com&quot;,
+        &quot;rule_index&quot;: 5,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,weixin.qq.com,DIRECT&quot;,
+        &quot;policy&quot;: &quot;DIRECT&quot;,
+        &quot;route_class&quot;: &quot;DIRECT&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;WeChat&quot;,
+      &quot;domain&quot;: &quot;wechat.com&quot;,
+      &quot;expected&quot;: &quot;DIRECT&quot;,
+      &quot;actual&quot;: &quot;DIRECT&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;wechat.com&quot;,
+        &quot;rule_index&quot;: 6,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,wechat.com,DIRECT&quot;,
+        &quot;policy&quot;: &quot;DIRECT&quot;,
+        &quot;route_class&quot;: &quot;DIRECT&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;Apple&quot;,
+      &quot;domain&quot;: &quot;apple.com&quot;,
+      &quot;expected&quot;: &quot;DIRECT&quot;,
+      &quot;actual&quot;: &quot;DIRECT&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;apple.com&quot;,
+        &quot;rule_index&quot;: 7,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,apple.com,DIRECT&quot;,
+        &quot;policy&quot;: &quot;DIRECT&quot;,
+        &quot;route_class&quot;: &quot;DIRECT&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;Apple&quot;,
+      &quot;domain&quot;: &quot;icloud.com&quot;,
+      &quot;expected&quot;: &quot;DIRECT&quot;,
+      &quot;actual&quot;: &quot;DIRECT&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;icloud.com&quot;,
+        &quot;rule_index&quot;: 8,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,icloud.com,DIRECT&quot;,
+        &quot;policy&quot;: &quot;DIRECT&quot;,
+        &quot;route_class&quot;: &quot;DIRECT&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;Apple&quot;,
+      &quot;domain&quot;: &quot;api.smoot.apple.cn&quot;,
+      &quot;expected&quot;: &quot;DIRECT&quot;,
+      &quot;actual&quot;: &quot;DIRECT&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;api.smoot.apple.cn&quot;,
+        &quot;rule_index&quot;: 9,
+        &quot;rule&quot;: &quot;DOMAIN,api.smoot.apple.cn,DIRECT&quot;,
+        &quot;policy&quot;: &quot;DIRECT&quot;,
+        &quot;route_class&quot;: &quot;DIRECT&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;Google&quot;,
+      &quot;domain&quot;: &quot;google.com&quot;,
+      &quot;expected&quot;: &quot;PROXY&quot;,
+      &quot;actual&quot;: &quot;PROXY&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;google.com&quot;,
+        &quot;rule_index&quot;: 3,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,google.com,PROXY&quot;,
+        &quot;policy&quot;: &quot;PROXY&quot;,
+        &quot;route_class&quot;: &quot;PROXY&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;Google&quot;,
+      &quot;domain&quot;: &quot;googleapis.com&quot;,
+      &quot;expected&quot;: &quot;PROXY&quot;,
+      &quot;actual&quot;: &quot;PROXY&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;googleapis.com&quot;,
+        &quot;rule_index&quot;: 4,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,googleapis.com,PROXY&quot;,
+        &quot;policy&quot;: &quot;PROXY&quot;,
+        &quot;route_class&quot;: &quot;PROXY&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;OpenAI&quot;,
+      &quot;domain&quot;: &quot;openai.com&quot;,
+      &quot;expected&quot;: &quot;PROXY&quot;,
+      &quot;actual&quot;: &quot;PROXY&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;openai.com&quot;,
+        &quot;rule_index&quot;: 1,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,openai.com,PROXY&quot;,
+        &quot;policy&quot;: &quot;PROXY&quot;,
+        &quot;route_class&quot;: &quot;PROXY&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;OpenAI&quot;,
+      &quot;domain&quot;: &quot;api.openai.com&quot;,
+      &quot;expected&quot;: &quot;PROXY&quot;,
+      &quot;actual&quot;: &quot;PROXY&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;api.openai.com&quot;,
+        &quot;rule_index&quot;: 0,
+        &quot;rule&quot;: &quot;DOMAIN,api.openai.com,PROXY&quot;,
+        &quot;policy&quot;: &quot;PROXY&quot;,
+        &quot;route_class&quot;: &quot;PROXY&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    },
+    {
+      &quot;app&quot;: &quot;OpenAI&quot;,
+      &quot;domain&quot;: &quot;chatgpt.com&quot;,
+      &quot;expected&quot;: &quot;PROXY&quot;,
+      &quot;actual&quot;: &quot;PROXY&quot;,
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;rule_match&quot;: {
+        &quot;domain&quot;: &quot;chatgpt.com&quot;,
+        &quot;rule_index&quot;: 2,
+        &quot;rule&quot;: &quot;DOMAIN-SUFFIX,chatgpt.com,PROXY&quot;,
+        &quot;policy&quot;: &quot;PROXY&quot;,
+        &quot;route_class&quot;: &quot;PROXY&quot;,
+        &quot;confidence&quot;: &quot;high&quot;,
+        &quot;notes&quot;: []
+      }
+    }
+  ],
+  &quot;warnings&quot;: [
+    &quot;Offline mode: DNS and egress checks were skipped; route results are static rule analysis only.&quot;
+  ],
+  &quot;metadata&quot;: {
+    &quot;proxy_count&quot;: 1,
+    &quot;proxy_group_count&quot;: 1,
+    &quot;rule_count&quot;: 11,
+    &quot;rule_provider_count&quot;: 0
+  }
+}</pre></details></section>
+</main></body></html>
