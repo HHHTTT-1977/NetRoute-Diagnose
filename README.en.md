@@ -191,12 +191,37 @@ presented as confirmed runtime routing.
 
 ## Privacy
 
+- Clash/OpenClash YAML parsing, rule matching, and HTML/JSON report generation
+  run locally.
+- Configuration files and report contents are not uploaded. NetRoute-Diagnose
+  does not collect users' network configurations and does not provide a
+  telemetry or hosted backend service.
+- Online checks are optional and are completely skipped with `--offline`.
+- DNS checks send each configured domain name to the system resolver or the DNS
+  server explicitly selected in the diagnostic profile.
+- Egress IP checks make an HTTP(S) request to the configured public-IP service.
+  The default endpoint is `api.ipify.org`; like any public-IP service, it
+  necessarily sees the request's source IP and normal connection metadata.
+- Online requests are used only to produce diagnostic results. The tool does
+  not transmit configuration files or report contents. Results are kept in the
+  local process and written only to output files selected by the user.
+- External resolvers and IP services may process or log requests under their
+  own policies. Choose endpoints you trust or use `--offline`.
 - HTML and JSON reports record configuration filenames, not absolute paths.
 - `127.0.0.1` in examples is the standard loopback address.
 - Tests use the documentation-only ranges `192.0.2.0/24`, `203.0.113.0/24`,
   and `2001:db8::/32`.
 - Before publishing an issue, still review domains, rule names, and observed
   egress IPs in your own report.
+
+### Data Flow
+
+| Operation | Data leaving the device | Destination | Local output |
+|---|---|---|---|
+| Clash rule parsing | None | Local process only | Match results |
+| DNS check | Configured domain name | System or configured DNS resolver | Resolved addresses and errors |
+| Egress IP check | HTTP(S) request metadata, including source IP | Configured IP service; default `api.ipify.org` | Observed public IP or error |
+| HTML/JSON generation | None | User-selected local path | Standalone report file |
 
 ## Development
 

@@ -28,6 +28,11 @@ dependencies = [
 [project.scripts]
 netroute-diagnose = "netroute_diagnose.cli:main"
 
+[project.urls]
+Homepage = "https://github.com/HHHTTT-1977/NetRoute-Diagnose"
+Repository = "https://github.com/HHHTTT-1977/NetRoute-Diagnose"
+Issues = "https://github.com/HHHTTT-1977/NetRoute-Diagnose/issues"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 
