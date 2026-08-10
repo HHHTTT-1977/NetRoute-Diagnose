@@ -23,16 +23,53 @@ NetRoute-Diagnose 是一个使用 Python 开发、面向 Clash/OpenClash 用户�
 
 ![NetRoute-Diagnose Demo 报告预览](docs/demo-preview.svg)
 
-在本机重新生成：
+![脱敏 CLI 输出预览](docs/cli-demo.svg)
+
+## 三个典型使用场景
+
+1. **微信意外走代理。** 对比预期的 `DIRECT` 与 Clash/OpenClash 首个命中规则，确认
+   是否存在确定性冲突。
+2. **Apple、Google 或 OpenAI 路径异常。** 使用内置配置定位相关规则，并查看静态分析的
+   置信度。
+3. **需要区分路径推断和实际出口。** 对比系统路径、无代理直连或显式 HTTP 代理的出口
+   观测，全程不修改网络设置。
+
+## 快速开始
+
+### 普通用户安装
+
+直接安装发布源码包即可，不需要了解 Git 或准备开发环境：
 
 ```bash
-python -m pip install -e .
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+```
+
+本版本尚未发布到 PyPI；在项目公告前请勿使用 `pip install netroute-diagnose`。
+
+运行完全离线的示例（不会发送 DNS 或出口 IP 请求）：
+
+```bash
 netroute-diagnose \
   --config examples/diagnosis.yaml \
   --clash-config examples/clash-config.yaml \
   --offline \
   --output reports/demo.html
 ```
+
+使用浏览器打开 `reports/demo.html`。仓库也提供一份
+[脱敏 HTML Demo 报告](docs/demo-report.html)。
+
+### 源码开发安装
+
+下载或克隆仓库后，在项目目录中执行：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+```
+
+Windows PowerShell 激活命令为 `.venv\Scripts\Activate.ps1`。
 
 ## 功能
 
@@ -66,30 +103,6 @@ netroute-diagnose \
 - Python 3.10 或更高版本
 - 可读取的 Clash/OpenClash YAML 配置
 - 若执行在线检测，需要网络访问
-
-## 安装
-
-下载本仓库后，在项目目录中执行：
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-```
-
-Windows PowerShell 激活命令为 `.venv\Scripts\Activate.ps1`。
-
-## 快速开始
-
-只分析示例规则，不发起 DNS 或出口请求：
-
-```bash
-netroute-diagnose \
-  --config examples/diagnosis.yaml \
-  --clash-config examples/clash-config.yaml \
-  --offline \
-  --output reports/demo.html
-```
 
 使用内置微信、Apple、Google、OpenAI 配置并执行在线检查：
 

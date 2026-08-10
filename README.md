@@ -13,11 +13,36 @@ OpenClash users. NetRoute-Diagnose 是面向 Clash/OpenClash 用户的只读网�
 
 ![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
 
+![NetRoute-Diagnose sanitized CLI demo](docs/cli-demo.svg)
+
+## Typical scenarios / 三个典型场景
+
+1. **WeChat unexpectedly uses a proxy / 微信意外走代理** — compare the expected
+   `DIRECT` route with the first matching Clash/OpenClash rule.
+2. **Apple, Google, or OpenAI takes the wrong route / Apple、Google 或 OpenAI
+   路径异常** — use the built-in profiles to see which rule is responsible and
+   whether static analysis is certain.
+3. **Compare egress observations / 比较出口观测** — compare system, direct, or an
+   explicit HTTP-proxy request to help distinguish a route assumption from an
+   observed public egress result.
+
+## Quick Start / 快速开始
+
+For ordinary users, install the released source package—no Git knowledge or
+development setup is required. 普通用户可以直接安装发布源码包，无需了解 Git 或开发环境：
+
+```bash
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+```
+
+Then run the built-in, fully offline example. 下面的示例完全离线，不会执行 DNS 或出口 IP
+请求：
+
 ## 30-second demo / 30 秒演示
 
 ```bash
-python -m pip install -e .
 netroute-diagnose \
+  --config examples/diagnosis.yaml \
   --clash-config examples/clash-config.yaml \
   --offline \
   --output reports/demo.html
@@ -28,6 +53,13 @@ Open `reports/demo.html` in any browser, or view the repository's
 
 随后用浏览器打开 `reports/demo.html`，也可以直接查看仓库中的
 [脱敏 Demo 报告](docs/demo-report.html)。
+
+PyPI has not been published for this release. Do not use `pip install
+netroute-diagnose` until a PyPI release is announced. 本版本尚未发布到 PyPI；在项目
+公告前请勿使用 `pip install netroute-diagnose`。
+
+For source development, clone the repository and use `python -m pip install -e .`.
+开发安装请克隆仓库后使用 `python -m pip install -e .`。
 
 The tool does not edit Clash/OpenClash configuration, restart services, change
 DNS settings, or modify system proxy settings.

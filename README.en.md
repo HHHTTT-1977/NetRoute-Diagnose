@@ -25,16 +25,56 @@ home-network addresses, usernames, or personal paths.
 
 ![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
 
-Generate it locally:
+![Sanitized CLI output preview](docs/cli-demo.svg)
+
+## Three common scenarios
+
+1. **WeChat unexpectedly uses a proxy.** Check whether a first-match rule
+   disagrees with the expected `DIRECT` path.
+2. **Apple, Google, or OpenAI takes the wrong route.** Start with the built-in
+   profiles to identify the relevant rule and its confidence.
+3. **You need to compare route assumptions with observed egress.** Compare
+   system, direct, or an explicit HTTP-proxy egress observation without
+   changing any network setting.
+
+## Quick start
+
+### Install as a user
+
+Install the released source package; Git and a development checkout are not
+required:
 
 ```bash
-python -m pip install -e .
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+```
+
+PyPI has not been published for this release. Do not use `pip install
+netroute-diagnose` until a PyPI release is announced.
+
+Run the fully offline example (it does not send DNS or egress requests):
+
+```bash
 netroute-diagnose \
   --config examples/diagnosis.yaml \
   --clash-config examples/clash-config.yaml \
   --offline \
   --output reports/demo.html
 ```
+
+Open `reports/demo.html` in a browser. The repository also includes a
+[sanitized demo report](docs/demo-report.html).
+
+### Install from source for development
+
+Download or clone the repository, open its directory, and run:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+```
+
+On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
 
 ## Features
 
@@ -70,30 +110,6 @@ DNS results or proxy names alone as proof of the actual runtime route.
 - Python 3.10 or newer
 - A readable Clash/OpenClash YAML configuration
 - Network access for online checks
-
-## Installation
-
-Download the repository, open its directory, and run:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-```
-
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
-
-## Quick start
-
-Analyze the included example without making DNS or egress requests:
-
-```bash
-netroute-diagnose \
-  --config examples/diagnosis.yaml \
-  --clash-config examples/clash-config.yaml \
-  --offline \
-  --output reports/demo.html
-```
 
 Use the built-in app profile and run online checks:
 

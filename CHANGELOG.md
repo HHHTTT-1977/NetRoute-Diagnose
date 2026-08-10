@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## 0.1.1 - 2026-08-10
+
+### Added
+
+- A macOS and Windows Python 3.12 smoke-test job, while retaining the full
+  Linux Python 3.10, 3.11, and 3.12 test matrix
+- A security policy and structured bug-report and feature-request templates
+- A sanitized CLI visual demo alongside the existing HTML report preview
+
+### Changed
+
+- Clearer user-first installation and Quick Start guidance in Chinese and
+  English
+- Three common routing-diagnosis scenarios and a more prominent privacy/data
+  flow explanation
+- Package version and release metadata prepared for v0.1.1
+
 ## Unreleased
 
 ### Planned
