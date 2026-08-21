@@ -2,10 +2,22 @@
 
 [中文](README.zh-CN.md) · [Short overview](README.md)
 
-NetRoute-Diagnose is a read-only Python network path diagnostic tool for Clash
-and OpenClash users. It combines DNS results, observed egress IPs, first-match
-Clash rule analysis, and per-app routing expectations in one standalone HTML
-report.
+NetRoute-Diagnose is a read-only Python network path diagnostic tool for
+Clash, OpenClash, and Mihomo users. It helps answer “Why did this app domain go
+DIRECT or PROXY?” by combining first-match YAML rule analysis with optional DNS
+and egress observations in one standalone HTML report.
+
+## Start here
+
+- **What it solves:** an app domain is expected to go `DIRECT` or `PROXY`, but
+  its first matching Clash/OpenClash/Mihomo rule suggests otherwise.
+- **Who it is for:** users who want a clear DNS → rule → policy → egress report
+  instead of manually tracing long rule lists.
+- **How to begin:** install the tagged source package, then run the included
+  offline example. It does not send DNS or egress requests.
+
+DNS and egress are separate observations; the static rule result does not
+claim to observe the app's live connection.
 
 ## Who it is for
 

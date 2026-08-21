@@ -2,9 +2,20 @@
 
 [English](README.en.md) · [简要首页](README.md)
 
-NetRoute-Diagnose 是一个使用 Python 开发、面向 Clash/OpenClash 用户的只读网络
-路径诊断工具。它把 DNS 结果、出口 IP 观测、Clash 规则首命中分析和 App 路由期望
-放进同一份 HTML 报告中，帮助定位“某个域名为什么走代理或直连”。
+NetRoute-Diagnose 是一个使用 Python 开发、面向 Clash、OpenClash、Mihomo 用户的
+只读网络路径诊断工具。它通过 YAML 首个命中规则分析，并结合可选 DNS 与出口 IP
+观测，回答“为什么这个 App 域名走直连或代理”，生成一份独立 HTML 报告。
+
+## 从这里开始
+
+- **解决什么问题：** 某个 App 域名预期走 `DIRECT` 或 `PROXY`，但首个匹配的
+  Clash/OpenClash/Mihomo 规则似乎与预期不一致。
+- **适合谁：** 希望通过一份清晰的 DNS → 规则 → 策略 → 出口报告，而不是手工追踪
+  长规则列表的用户。
+- **如何开始：** 安装发布源码包，然后运行仓库附带的离线示例；该示例不会发送 DNS
+  或出口请求。
+
+DNS 与出口是独立观测；静态规则结果不代表工具观察到了 App 的实时连接。
 
 ## 适合谁
 

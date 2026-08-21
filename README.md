@@ -2,14 +2,27 @@
 
 [中文文档](README.zh-CN.md) · [English documentation](README.en.md)
 
-**Find out why an app domain goes DIRECT or through a proxy—without changing
-your network.**
+**Why did this app domain go DIRECT or PROXY? Read-only DNS → rule → policy →
+egress diagnostics for Clash, OpenClash, and Mihomo.**
 
-**查清 App 域名为什么直连或走代理，全程不修改你的网络。**
+**为什么这个 App 域名走直连或代理？面向 Clash、OpenClash、Mihomo 的只读
+DNS → 规则 → 策略 → 出口诊断。**
 
 NetRoute-Diagnose is a read-only network path diagnostic tool for Clash and
-OpenClash users. NetRoute-Diagnose 是面向 Clash/OpenClash 用户的只读网络路径诊断
-工具，内置微信、Apple、Google 和 OpenAI 示例。
+OpenClash/Mihomo users. It explains the first matching YAML rule for an app
+domain and can add optional DNS and egress observations. NetRoute-Diagnose 是
+面向 Clash/OpenClash/Mihomo 用户的只读网络路径诊断工具：解释 App 域名的 YAML 首个
+命中规则，并可补充可选的 DNS 与出口观测；内置微信、Apple、Google 和 OpenAI 示例。
+
+## Start here / 从这里开始
+
+- **Problem / 问题**: identify whether a domain expected to be `DIRECT` or
+  `PROXY` conflicts with the first matching Clash/OpenClash/Mihomo rule.
+  定位预期直连或代理的域名是否与首个匹配规则冲突。
+- **For / 适合谁**: users who want a readable report instead of manually
+  tracing long rule lists. 适合不想手工追踪长规则列表的用户。
+- **Start / 如何开始**: install the tagged source package, then run the
+  included offline example below. 安装发布源码包后运行下方的离线示例即可。
 
 ![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
 
