@@ -12,7 +12,7 @@ NetRoute-Diagnose 是一个使用 Python 开发、面向 Clash、OpenClash、Mih
   Clash/OpenClash/Mihomo 规则似乎与预期不一致。
 - **适合谁：** 希望通过一份清晰的 DNS → 规则 → 策略 → 出口报告，而不是手工追踪
   长规则列表的用户。
-- **如何开始：** 安装发布源码包，然后运行仓库附带的离线示例；该示例不会发送 DNS
+- **如何开始：** PyPI 发布可用后安装，然后运行仓库附带的离线示例；该示例不会发送 DNS
   或出口请求。
 
 DNS 与出口是独立观测；静态规则结果不代表工具观察到了 App 的实时连接。
@@ -47,15 +47,21 @@ DNS 与出口是独立观测；静态规则结果不代表工具观察到了 App
 
 ## 快速开始
 
-### 普通用户安装
+### 从 PyPI 安装
 
-直接安装发布源码包即可，不需要了解 Git 或准备开发环境：
+当前版本在 PyPI 可用后，直接安装即可，不需要了解 Git 或准备开发环境：
 
 ```bash
-python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+python -m pip install --upgrade netroute-diagnose
 ```
 
-本版本尚未发布到 PyPI；在项目公告前请勿使用 `pip install netroute-diagnose`。
+### 安装 GitHub 发布源码包
+
+如希望使用发布源码包，仍可执行：
+
+```bash
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.2.zip"
+```
 
 运行完全离线的示例（不会发送 DNS 或出口 IP 请求）：
 

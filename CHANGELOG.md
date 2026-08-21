@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Planned
+
+- Runtime controller integration with an explicit read-only mode
+- Additional Clash rule types and rule-provider inspection
+
+## 0.1.2 - 2026-08-21
+
+### Added
+
+- PyPI distribution support through the isolated GitHub Actions Trusted
+  Publishing workflow
+
+### Changed
+
+- Document PyPI installation with `pip install netroute-diagnose` alongside
+  the existing GitHub source-package and development installation methods
+
 ## 0.1.1 - 2026-08-10
 
 ### Added
@@ -21,13 +40,6 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Three common routing-diagnosis scenarios and a more prominent privacy/data
   flow explanation
 - Package version and release metadata prepared for v0.1.1
-
-## Unreleased
-
-### Planned
-
-- Runtime controller integration with an explicit read-only mode
-- Additional Clash rule types and rule-provider inspection
 
 ## 0.1.0 - 2026-07-16
 

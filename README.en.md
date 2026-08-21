@@ -13,8 +13,9 @@ and egress observations in one standalone HTML report.
   its first matching Clash/OpenClash/Mihomo rule suggests otherwise.
 - **Who it is for:** users who want a clear DNS → rule → policy → egress report
   instead of manually tracing long rule lists.
-- **How to begin:** install the tagged source package, then run the included
-  offline example. It does not send DNS or egress requests.
+- **How to begin:** install from PyPI when the release upload is available,
+  then run the included offline example. It does not send DNS or egress
+  requests.
 
 DNS and egress are separate observations; the static rule result does not
 claim to observe the app's live connection.
@@ -51,17 +52,23 @@ home-network addresses, usernames, or personal paths.
 
 ## Quick start
 
-### Install as a user
+### Install from PyPI
 
-Install the released source package; Git and a development checkout are not
-required:
+When the current release is available on PyPI, install it without Git or a
+development checkout:
 
 ```bash
-python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+python -m pip install --upgrade netroute-diagnose
 ```
 
-PyPI has not been published for this release. Do not use `pip install
-netroute-diagnose` until a PyPI release is announced.
+### Install the GitHub release source package
+
+The tagged source package remains available if you prefer that installation
+method:
+
+```bash
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.2.zip"
+```
 
 Run the fully offline example (it does not send DNS or egress requests):
 

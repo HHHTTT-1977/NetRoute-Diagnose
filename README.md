@@ -21,8 +21,9 @@ domain and can add optional DNS and egress observations. NetRoute-Diagnose 是
   定位预期直连或代理的域名是否与首个匹配规则冲突。
 - **For / 适合谁**: users who want a readable report instead of manually
   tracing long rule lists. 适合不想手工追踪长规则列表的用户。
-- **Start / 如何开始**: install the tagged source package, then run the
-  included offline example below. 安装发布源码包后运行下方的离线示例即可。
+- **Start / 如何开始**: install from PyPI when the release upload is available,
+  then run the included offline example below. PyPI 发布可用后安装，再运行下方的
+  离线示例即可。
 
 ![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
 
@@ -41,11 +42,19 @@ domain and can add optional DNS and egress observations. NetRoute-Diagnose 是
 
 ## Quick Start / 快速开始
 
-For ordinary users, install the released source package—no Git knowledge or
-development setup is required. 普通用户可以直接安装发布源码包，无需了解 Git 或开发环境：
+When the current release is available on PyPI, ordinary users can install it
+without Git knowledge or a development checkout. 当前版本在 PyPI 可用后，普通用户无需
+了解 Git 或准备开发环境即可安装：
 
 ```bash
-python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.1.zip"
+python -m pip install --upgrade netroute-diagnose
+```
+
+The GitHub release source package remains available when you prefer that
+installation method. 若希望使用 GitHub 发布源码包，仍可执行：
+
+```bash
+python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.2.zip"
 ```
 
 Then run the built-in, fully offline example. 下面的示例完全离线，不会执行 DNS 或出口 IP
@@ -66,10 +75,6 @@ Open `reports/demo.html` in any browser, or view the repository's
 
 随后用浏览器打开 `reports/demo.html`，也可以直接查看仓库中的
 [脱敏 Demo 报告](docs/demo-report.html)。
-
-PyPI has not been published for this release. Do not use `pip install
-netroute-diagnose` until a PyPI release is announced. 本版本尚未发布到 PyPI；在项目
-公告前请勿使用 `pip install netroute-diagnose`。
 
 For source development, clone the repository and use `python -m pip install -e .`.
 开发安装请克隆仓库后使用 `python -m pip install -e .`。
