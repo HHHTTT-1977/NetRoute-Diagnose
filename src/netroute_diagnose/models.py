@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from .privacy import sanitize
+
 
 @dataclass(slots=True)
 class DNSResult:
@@ -56,5 +58,9 @@ class DiagnosticReport:
     warnings: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    sensitive_values: list[str] = field(default_factory=list, repr=False)
+
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        data = asdict(self)
+        secrets = data.pop("sensitive_values")
+        return sanitize(data, secrets)

@@ -29,17 +29,20 @@
 </head>
 <body><main>
   <h1>NetRoute-Diagnose</h1>
-  <p class="sub">Generated 2026-07-16T18:02:02+08:00 · Static rule analysis is not proof of runtime routing.</p>
+  <p class="sub">Generated 2026-10-11T00:00:00+00:00 · Static rule analysis is not proof of runtime routing.</p>
+  <p>配置模式 / Configured mode: rule. Runtime mode and group selection are not observed.
+  UNKNOWN outbound means the target is known but its final route is not. PASS compares static evidence only.
+  / 未观测运行态；命名目标不代表最终出站，PASS 仅表示静态证据符合预期。</p>
   <section class="grid">
-    <div class="card metric"><strong>10</strong><span>PASS</span></div>
+    <div class="card metric"><strong>5</strong><span>PASS</span></div>
     <div class="card metric"><strong>0</strong><span>MISMATCH</span></div>
-    <div class="card metric"><strong>0</strong><span>UNCERTAIN</span></div>
+    <div class="card metric"><strong>5</strong><span>UNCERTAIN</span></div>
     <div class="card metric"><strong>0</strong><span>UNKNOWN</span></div>
   </section>
   <section class="card"><h2>Rule path checks / 规则路径检查</h2><div class="table-wrap">
-    <table><thead><tr><th>App</th><th>Domain</th><th>Expected</th><th>Actual</th>
-    <th>Status</th><th>Confidence</th><th>Matched rule</th><th>Notes</th></tr></thead>
-    <tbody><tr><td>WeChat</td><td><code>weixin.qq.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#6 <code>DOMAIN-SUFFIX,weixin.qq.com,DIRECT</code></td><td>—</td></tr><tr><td>WeChat</td><td><code>wechat.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#7 <code>DOMAIN-SUFFIX,wechat.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>apple.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#8 <code>DOMAIN-SUFFIX,apple.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>icloud.com</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#9 <code>DOMAIN-SUFFIX,icloud.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>api.smoot.apple.cn</code></td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#10 <code>DOMAIN,api.smoot.apple.cn,DIRECT</code></td><td>—</td></tr><tr><td>Google</td><td><code>google.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#4 <code>DOMAIN-SUFFIX,google.com,PROXY</code></td><td>—</td></tr><tr><td>Google</td><td><code>googleapis.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#5 <code>DOMAIN-SUFFIX,googleapis.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>openai.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#2 <code>DOMAIN-SUFFIX,openai.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>api.openai.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#1 <code>DOMAIN,api.openai.com,PROXY</code></td><td>—</td></tr><tr><td>OpenAI</td><td><code>chatgpt.com</code></td><td>PROXY</td><td>PROXY</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#3 <code>DOMAIN-SUFFIX,chatgpt.com,PROXY</code></td><td>—</td></tr></tbody></table></div></section>
+    <table><thead><tr><th>App</th><th>Domain</th><th>Expected</th><th>Policy target</th><th>Static outbound</th>
+    <th>Status</th><th>Confidence</th><th>Candidate rule</th><th>Notes</th></tr></thead>
+    <tbody><tr><td>WeChat</td><td><code>weixin.qq.com</code></td><td>DIRECT</td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#6 <code>DOMAIN-SUFFIX,weixin.qq.com,DIRECT</code></td><td>—</td></tr><tr><td>WeChat</td><td><code>wechat.com</code></td><td>DIRECT</td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#7 <code>DOMAIN-SUFFIX,wechat.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>apple.com</code></td><td>DIRECT</td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#8 <code>DOMAIN-SUFFIX,apple.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>icloud.com</code></td><td>DIRECT</td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#9 <code>DOMAIN-SUFFIX,icloud.com,DIRECT</code></td><td>—</td></tr><tr><td>Apple</td><td><code>api.smoot.apple.cn</code></td><td>DIRECT</td><td>DIRECT</td><td>DIRECT</td><td><span class="badge pass">PASS</span></td><td>high</td><td>#10 <code>DOMAIN,api.smoot.apple.cn,DIRECT</code></td><td>—</td></tr><tr><td>Google</td><td><code>google.com</code></td><td>PROXY</td><td>PROXY</td><td>UNKNOWN</td><td><span class="badge uncertain">UNCERTAIN</span></td><td>limited</td><td>#4 <code>DOMAIN-SUFFIX,google.com,PROXY</code></td><td>Named/unrecognized policy target: final outbound and continuation are unknown.</td></tr><tr><td>Google</td><td><code>googleapis.com</code></td><td>PROXY</td><td>PROXY</td><td>UNKNOWN</td><td><span class="badge uncertain">UNCERTAIN</span></td><td>limited</td><td>#5 <code>DOMAIN-SUFFIX,googleapis.com,PROXY</code></td><td>Named/unrecognized policy target: final outbound and continuation are unknown.</td></tr><tr><td>OpenAI</td><td><code>openai.com</code></td><td>PROXY</td><td>PROXY</td><td>UNKNOWN</td><td><span class="badge uncertain">UNCERTAIN</span></td><td>limited</td><td>#2 <code>DOMAIN-SUFFIX,openai.com,PROXY</code></td><td>Named/unrecognized policy target: final outbound and continuation are unknown.</td></tr><tr><td>OpenAI</td><td><code>api.openai.com</code></td><td>PROXY</td><td>PROXY</td><td>UNKNOWN</td><td><span class="badge uncertain">UNCERTAIN</span></td><td>limited</td><td>#1 <code>DOMAIN,api.openai.com,PROXY</code></td><td>Named/unrecognized policy target: final outbound and continuation are unknown.</td></tr><tr><td>OpenAI</td><td><code>chatgpt.com</code></td><td>PROXY</td><td>PROXY</td><td>UNKNOWN</td><td><span class="badge uncertain">UNCERTAIN</span></td><td>limited</td><td>#3 <code>DOMAIN-SUFFIX,chatgpt.com,PROXY</code></td><td>Named/unrecognized policy target: final outbound and continuation are unknown.</td></tr></tbody></table></div></section>
   <section class="card"><h2>DNS checks / DNS 检测</h2><div class="table-wrap">
     <table><thead><tr><th>Domain</th><th>Resolver</th><th>Addresses</th>
     <th>ms</th><th>Error</th></tr></thead><tbody><tr><td colspan="5">Skipped</td></tr></tbody>
@@ -49,11 +52,11 @@
     <th>ms</th><th>Error</th></tr></thead><tbody><tr><td colspan="6">Skipped</td></tr></tbody>
     </table></div></section>
   <section class="card"><h2>Warnings / 警告</h2><ul><li>Offline mode: DNS and egress checks were skipped; route results are static rule analysis only.</li></ul></section>
-  <section class="card"><details><summary>Raw diagnostic data / 原始诊断数据</summary>
+  <section class="card"><details><summary>Sanitized diagnostic data / 脱敏诊断数据</summary>
     <pre>{
-  &quot;generated_at&quot;: &quot;2026-07-16T18:02:02+08:00&quot;,
-  &quot;source_config&quot;: &quot;diagnosis.yaml&quot;,
-  &quot;clash_config&quot;: &quot;clash-config.yaml&quot;,
+  &quot;generated_at&quot;: &quot;2026-10-11T00:00:00+00:00&quot;,
+  &quot;source_config&quot;: &quot;default.yaml&quot;,
+  &quot;clash_config&quot;: &quot;demo-clash.yaml&quot;,
   &quot;offline&quot;: true,
   &quot;dns_results&quot;: [],
   &quot;egress_results&quot;: [],
@@ -142,80 +145,90 @@
       &quot;app&quot;: &quot;Google&quot;,
       &quot;domain&quot;: &quot;google.com&quot;,
       &quot;expected&quot;: &quot;PROXY&quot;,
-      &quot;actual&quot;: &quot;PROXY&quot;,
-      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;actual&quot;: &quot;UNKNOWN&quot;,
+      &quot;status&quot;: &quot;UNCERTAIN&quot;,
       &quot;rule_match&quot;: {
         &quot;domain&quot;: &quot;google.com&quot;,
         &quot;rule_index&quot;: 3,
         &quot;rule&quot;: &quot;DOMAIN-SUFFIX,google.com,PROXY&quot;,
         &quot;policy&quot;: &quot;PROXY&quot;,
-        &quot;route_class&quot;: &quot;PROXY&quot;,
-        &quot;confidence&quot;: &quot;high&quot;,
-        &quot;notes&quot;: []
+        &quot;route_class&quot;: &quot;UNKNOWN&quot;,
+        &quot;confidence&quot;: &quot;limited&quot;,
+        &quot;notes&quot;: [
+          &quot;Named/unrecognized policy target: final outbound and continuation are unknown.&quot;
+        ]
       }
     },
     {
       &quot;app&quot;: &quot;Google&quot;,
       &quot;domain&quot;: &quot;googleapis.com&quot;,
       &quot;expected&quot;: &quot;PROXY&quot;,
-      &quot;actual&quot;: &quot;PROXY&quot;,
-      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;actual&quot;: &quot;UNKNOWN&quot;,
+      &quot;status&quot;: &quot;UNCERTAIN&quot;,
       &quot;rule_match&quot;: {
         &quot;domain&quot;: &quot;googleapis.com&quot;,
         &quot;rule_index&quot;: 4,
         &quot;rule&quot;: &quot;DOMAIN-SUFFIX,googleapis.com,PROXY&quot;,
         &quot;policy&quot;: &quot;PROXY&quot;,
-        &quot;route_class&quot;: &quot;PROXY&quot;,
-        &quot;confidence&quot;: &quot;high&quot;,
-        &quot;notes&quot;: []
+        &quot;route_class&quot;: &quot;UNKNOWN&quot;,
+        &quot;confidence&quot;: &quot;limited&quot;,
+        &quot;notes&quot;: [
+          &quot;Named/unrecognized policy target: final outbound and continuation are unknown.&quot;
+        ]
       }
     },
     {
       &quot;app&quot;: &quot;OpenAI&quot;,
       &quot;domain&quot;: &quot;openai.com&quot;,
       &quot;expected&quot;: &quot;PROXY&quot;,
-      &quot;actual&quot;: &quot;PROXY&quot;,
-      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;actual&quot;: &quot;UNKNOWN&quot;,
+      &quot;status&quot;: &quot;UNCERTAIN&quot;,
       &quot;rule_match&quot;: {
         &quot;domain&quot;: &quot;openai.com&quot;,
         &quot;rule_index&quot;: 1,
         &quot;rule&quot;: &quot;DOMAIN-SUFFIX,openai.com,PROXY&quot;,
         &quot;policy&quot;: &quot;PROXY&quot;,
-        &quot;route_class&quot;: &quot;PROXY&quot;,
-        &quot;confidence&quot;: &quot;high&quot;,
-        &quot;notes&quot;: []
+        &quot;route_class&quot;: &quot;UNKNOWN&quot;,
+        &quot;confidence&quot;: &quot;limited&quot;,
+        &quot;notes&quot;: [
+          &quot;Named/unrecognized policy target: final outbound and continuation are unknown.&quot;
+        ]
       }
     },
     {
       &quot;app&quot;: &quot;OpenAI&quot;,
       &quot;domain&quot;: &quot;api.openai.com&quot;,
       &quot;expected&quot;: &quot;PROXY&quot;,
-      &quot;actual&quot;: &quot;PROXY&quot;,
-      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;actual&quot;: &quot;UNKNOWN&quot;,
+      &quot;status&quot;: &quot;UNCERTAIN&quot;,
       &quot;rule_match&quot;: {
         &quot;domain&quot;: &quot;api.openai.com&quot;,
         &quot;rule_index&quot;: 0,
         &quot;rule&quot;: &quot;DOMAIN,api.openai.com,PROXY&quot;,
         &quot;policy&quot;: &quot;PROXY&quot;,
-        &quot;route_class&quot;: &quot;PROXY&quot;,
-        &quot;confidence&quot;: &quot;high&quot;,
-        &quot;notes&quot;: []
+        &quot;route_class&quot;: &quot;UNKNOWN&quot;,
+        &quot;confidence&quot;: &quot;limited&quot;,
+        &quot;notes&quot;: [
+          &quot;Named/unrecognized policy target: final outbound and continuation are unknown.&quot;
+        ]
       }
     },
     {
       &quot;app&quot;: &quot;OpenAI&quot;,
       &quot;domain&quot;: &quot;chatgpt.com&quot;,
       &quot;expected&quot;: &quot;PROXY&quot;,
-      &quot;actual&quot;: &quot;PROXY&quot;,
-      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;actual&quot;: &quot;UNKNOWN&quot;,
+      &quot;status&quot;: &quot;UNCERTAIN&quot;,
       &quot;rule_match&quot;: {
         &quot;domain&quot;: &quot;chatgpt.com&quot;,
         &quot;rule_index&quot;: 2,
         &quot;rule&quot;: &quot;DOMAIN-SUFFIX,chatgpt.com,PROXY&quot;,
         &quot;policy&quot;: &quot;PROXY&quot;,
-        &quot;route_class&quot;: &quot;PROXY&quot;,
-        &quot;confidence&quot;: &quot;high&quot;,
-        &quot;notes&quot;: []
+        &quot;route_class&quot;: &quot;UNKNOWN&quot;,
+        &quot;confidence&quot;: &quot;limited&quot;,
+        &quot;notes&quot;: [
+          &quot;Named/unrecognized policy target: final outbound and continuation are unknown.&quot;
+        ]
       }
     }
   ],
@@ -223,9 +236,10 @@
     &quot;Offline mode: DNS and egress checks were skipped; route results are static rule analysis only.&quot;
   ],
   &quot;metadata&quot;: {
+    &quot;mode&quot;: &quot;rule&quot;,
+    &quot;rule_count&quot;: 11,
     &quot;proxy_count&quot;: 1,
     &quot;proxy_group_count&quot;: 1,
-    &quot;rule_count&quot;: 11,
     &quot;rule_provider_count&quot;: 0
   }
 }</pre></details></section>

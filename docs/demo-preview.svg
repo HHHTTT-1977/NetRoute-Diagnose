@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
   <title id="title">NetRoute-Diagnose demo report preview</title>
-  <desc id="desc">A synthetic offline report showing ten passing route checks and no mismatches.</desc>
+  <desc id="desc">A synthetic offline report showing five passing and five uncertain route checks and no mismatches.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#eef4ff"/>
@@ -19,7 +19,7 @@
   <g font-family="system-ui, sans-serif">
     <g transform="translate(84 150)">
       <rect width="235" height="88" rx="12" fill="#f8fafc" stroke="#dbe3ef"/>
-      <text x="18" y="40" fill="#16a34a" font-size="30" font-weight="700">10</text>
+      <text x="18" y="40" fill="#16a34a" font-size="30" font-weight="700">5</text>
       <text x="18" y="66" fill="#64748b" font-size="13">PASS</text>
     </g>
     <g transform="translate(336 150)">
@@ -29,7 +29,7 @@
     </g>
     <g transform="translate(588 150)">
       <rect width="235" height="88" rx="12" fill="#f8fafc" stroke="#dbe3ef"/>
-      <text x="18" y="40" fill="#d97706" font-size="30" font-weight="700">0</text>
+      <text x="18" y="40" fill="#d97706" font-size="30" font-weight="700">5</text>
       <text x="18" y="66" fill="#64748b" font-size="13">UNCERTAIN</text>
     </g>
     <g transform="translate(840 150)">
@@ -45,7 +45,7 @@
       <text x="104" y="330">APP</text>
       <text x="230" y="330">DOMAIN</text>
       <text x="500" y="330">EXPECTED</text>
-      <text x="620" y="330">ACTUAL</text>
+      <text x="620" y="330">STATIC</text>
       <text x="730" y="330">STATUS</text>
       <text x="850" y="330">MATCHED RULE</text>
     </g>
@@ -75,9 +75,9 @@
         <text x="104" y="484" fill="#172033">Google</text>
         <text x="230" y="484" fill="#2563eb">google.com</text>
         <text x="500" y="484" fill="#172033">PROXY</text>
-        <text x="620" y="484" fill="#172033">PROXY</text>
+        <text x="620" y="484" fill="#172033">UNKNOWN</text>
         <rect x="730" y="466" width="62" height="24" rx="12" fill="#dcfce7"/>
-        <text x="746" y="483" fill="#15803d" font-size="11" font-weight="700">PASS</text>
+        <text x="734" y="483" fill="#b45309" font-size="10" font-weight="700">UNCERTAIN</text>
         <text x="850" y="484" fill="#475569">DOMAIN-SUFFIX,…,PROXY</text>
       </g>
       <line x1="104" y1="507" x2="1048" y2="507" stroke="#e2e8f0"/>
@@ -85,9 +85,9 @@
         <text x="104" y="536" fill="#172033">OpenAI</text>
         <text x="230" y="536" fill="#2563eb">api.openai.com</text>
         <text x="500" y="536" fill="#172033">PROXY</text>
-        <text x="620" y="536" fill="#172033">PROXY</text>
+        <text x="620" y="536" fill="#172033">UNKNOWN</text>
         <rect x="730" y="518" width="62" height="24" rx="12" fill="#dcfce7"/>
-        <text x="746" y="535" fill="#15803d" font-size="11" font-weight="700">PASS</text>
+        <text x="734" y="535" fill="#b45309" font-size="10" font-weight="700">UNCERTAIN</text>
         <text x="850" y="536" fill="#475569">DOMAIN,…,PROXY</text>
       </g>
     </g>

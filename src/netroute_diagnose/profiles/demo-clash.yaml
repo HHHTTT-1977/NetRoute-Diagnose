@@ -1,0 +1,23 @@
+# Synthetic, non-secret config for demonstration and tests.
+mode: rule
+proxies:
+  - name: Example Proxy
+    type: http
+    server: 127.0.0.1
+    port: 8080
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies: [Example Proxy, DIRECT]
+rules:
+  - DOMAIN,api.openai.com,PROXY
+  - DOMAIN-SUFFIX,openai.com,PROXY
+  - DOMAIN-SUFFIX,chatgpt.com,PROXY
+  - DOMAIN-SUFFIX,google.com,PROXY
+  - DOMAIN-SUFFIX,googleapis.com,PROXY
+  - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,wechat.com,DIRECT
+  - DOMAIN-SUFFIX,apple.com,DIRECT
+  - DOMAIN-SUFFIX,icloud.com,DIRECT
+  - DOMAIN,api.smoot.apple.cn,DIRECT
+  - MATCH,PROXY

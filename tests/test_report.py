@@ -17,7 +17,8 @@ class ReportTests(unittest.TestCase):
             offline=True,
         )
         self.assertEqual(len(report.domain_checks), 10)
-        self.assertTrue(all(item.status == "PASS" for item in report.domain_checks))
+        self.assertEqual(sum(item.status == "PASS" for item in report.domain_checks), 5)
+        self.assertEqual(sum(item.status == "UNCERTAIN" for item in report.domain_checks), 5)
         self.assertFalse(report.dns_results)
         self.assertEqual(report.source_config, "diagnosis.yaml")
         self.assertEqual(report.clash_config, "clash-config.yaml")

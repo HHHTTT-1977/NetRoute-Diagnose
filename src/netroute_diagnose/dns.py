@@ -11,6 +11,7 @@ def resolve_domain(
 ) -> DNSResult:
     started = time.monotonic()
     resolver_name = nameserver or "system"
+    errors: list[str] = []
     try:
         if nameserver:
             try:
@@ -24,27 +25,21 @@ def resolve_domain(
             resolver.timeout = timeout
             resolver.lifetime = timeout
             addresses: set[str] = set()
-            errors: list[str] = []
             for record_type in ("A", "AAAA"):
                 try:
                     answer = resolver.resolve(domain, record_type)
                     addresses.update(str(record) for record in answer)
                 except Exception as exc:  # DNS backends expose several exception types
-                    errors.append(f"{record_type}: {exc}")
-            if not addresses:
-                raise RuntimeError("; ".join(errors))
+                    errors.append(f"{record_type}: {type(exc).__name__}")
         else:
-            previous_timeout = socket.getdefaulttimeout()
-            socket.setdefaulttimeout(timeout)
-            try:
-                info = socket.getaddrinfo(domain, None, type=socket.SOCK_STREAM)
-            finally:
-                socket.setdefaulttimeout(previous_timeout)
+            # getaddrinfo follows OS resolver deadlines, not socket timeouts.
+            info = socket.getaddrinfo(domain, None, type=socket.SOCK_STREAM)
             addresses = {item[4][0] for item in info}
         return DNSResult(
             domain=domain,
             resolver=resolver_name,
             addresses=sorted(addresses),
+            error="; ".join(errors) or None,
             elapsed_ms=(time.monotonic() - started) * 1000,
         )
     except Exception as exc:
@@ -52,5 +47,5 @@ def resolve_domain(
             domain=domain,
             resolver=resolver_name,
             elapsed_ms=(time.monotonic() - started) * 1000,
-            error=str(exc),
+            error=f"DNS query failed ({type(exc).__name__}); backend details omitted for privacy",
         )

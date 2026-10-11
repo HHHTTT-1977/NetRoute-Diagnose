@@ -1,123 +1,115 @@
 # NetRoute-Diagnose
 
-[中文文档](README.zh-CN.md) · [English documentation](README.en.md)
+[中文文档](https://github.com/HHHTTT-1977/NetRoute-Diagnose/blob/main/README.zh-CN.md) · [English documentation](https://github.com/HHHTTT-1977/NetRoute-Diagnose/blob/main/README.en.md)
 
-**Why did this app domain go DIRECT or PROXY? Read-only DNS → rule → policy →
-egress diagnostics for Clash, OpenClash, and Mihomo.**
+**Read-only, offline-first rule diagnosis for Clash, OpenClash and Mihomo.**
+**只读分析域名的候选命中规则、策略目标及不确定性，生成独立 HTML 报告。**
 
-**为什么这个 App 域名走直连或代理？面向 Clash、OpenClash、Mihomo 的只读
-DNS → 规则 → 策略 → 出口诊断。**
+Use it to compare domain routing expectations with a local YAML configuration.
+It does not observe app connections, select proxy groups, modify settings, or restart services.
+DNS and egress checks are optional, independent observations from the device running this tool.
 
-NetRoute-Diagnose is a read-only network path diagnostic tool for Clash and
-OpenClash/Mihomo users. It explains the first matching YAML rule for an app
-domain and can add optional DNS and egress observations. NetRoute-Diagnose 是
-面向 Clash/OpenClash/Mihomo 用户的只读网络路径诊断工具：解释 App 域名的 YAML 首个
-命中规则，并可补充可选的 DNS 与出口观测；内置微信、Apple、Google 和 OpenAI 示例。
-
-## Start here / 从这里开始
-
-- **Problem / 问题**: identify whether a domain expected to be `DIRECT` or
-  `PROXY` conflicts with the first matching Clash/OpenClash/Mihomo rule.
-  定位预期直连或代理的域名是否与首个匹配规则冲突。
-- **For / 适合谁**: users who want a readable report instead of manually
-  tracing long rule lists. 适合不想手工追踪长规则列表的用户。
-- **Start / 如何开始**: install from PyPI when the release upload is available,
-  then run the included offline example below. PyPI 发布可用后安装，再运行下方的
-  离线示例即可。
-
-![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
-
-![NetRoute-Diagnose sanitized CLI demo](docs/cli-demo.svg)
-
-## Typical scenarios / 三个典型场景
-
-1. **WeChat unexpectedly uses a proxy / 微信意外走代理** — compare the expected
-   `DIRECT` route with the first matching Clash/OpenClash rule.
-2. **Apple, Google, or OpenAI takes the wrong route / Apple、Google 或 OpenAI
-   路径异常** — use the built-in profiles to see which rule is responsible and
-   whether static analysis is certain.
-3. **Compare egress observations / 比较出口观测** — compare system, direct, or an
-   explicit HTTP-proxy request to help distinguish a route assumption from an
-   observed public egress result.
+适合排查“这个域名的规则目标是否符合预期”，无需开放控制器或提供路由器密码。
+静态配置不能证明 App 的实时路径；命名策略组不会被直接当作最终 PROXY 出站。
 
 ## Quick Start / 快速开始
 
-When the current release is available on PyPI, ordinary users can install it
-without Git knowledge or a development checkout. 当前版本在 PyPI 可用后，普通用户无需
-了解 Git 或准备开发环境即可安装：
+This branch prepares **0.1.3rc1**, an unpublished candidate. PyPI **0.1.2 does not
+support `--demo`**. To review this candidate, install its locally built or CI-produced
+wheel (replace the path with the downloaded wheel):
+
+```bash
+python -m pip install /path/to/netroute_diagnose-0.1.3rc1-py3-none-any.whl
+```
+
+当前分支是尚未发布的候选版。评审时安装构建产出的 wheel；无需克隆仓库来运行。
+Windows 用户请替换为自己的 wheel 文件路径。候选功能正式发布到 PyPI 后，可使用：
 
 ```bash
 python -m pip install --upgrade netroute-diagnose
 ```
 
-The GitHub release source package remains available when you prefer that
-installation method. 若希望使用 GitHub 发布源码包，仍可执行：
+From any new directory, run this **fully offline** example; all inputs are bundled:
+在任意新目录执行下列命令；示例随包安装，不需要 `examples/`，不会发送网络请求：
 
 ```bash
-python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.2.zip"
+netroute-diagnose --demo --output demo.html
 ```
 
-Then run the built-in, fully offline example. 下面的示例完全离线，不会执行 DNS 或出口 IP
-请求：
+Double-click `demo.html` or open it with your browser's **Open File** command.
+双击 `demo.html` 或在浏览器中选择“打开文件”。预期为 **5 PASS、5 UNCERTAIN**：
+示例中的命名代理组选择未知；不确定性是正确结果，不是安装失败。
 
-## 30-second demo / 30 秒演示
+For JSON as well / 同时导出 JSON：
 
 ```bash
-netroute-diagnose \
-  --config examples/diagnosis.yaml \
-  --clash-config examples/clash-config.yaml \
-  --offline \
-  --output reports/demo.html
+netroute-diagnose --demo --output demo.html --json-output demo.json
 ```
 
-Open `reports/demo.html` in any browser, or view the repository's
-[sanitized demo report](docs/demo-report.html).
+## Your configuration / 使用自己的配置
 
-随后用浏览器打开 `reports/demo.html`，也可以直接查看仓库中的
-[脱敏 Demo 报告](docs/demo-report.html)。
+Requires Python 3.10+. Run on your computer with a local copy of the **effective**
+Clash/OpenClash YAML, including applied overrides. An original subscription may
+not match the configuration the router actually uses. No router access is performed by this tool.
 
-For source development, clone the repository and use `python -m pip install -e .`.
-开发安装请克隆仓库后使用 `python -m pip install -e .`。
+需要 Python 3.10+。将你自行取得的实际生效 YAML 放在电脑上；注意 OpenClash 覆写后的
+配置可能不同于订阅原文。工具不负责连接路由器或取得配置。
 
-The tool does not edit Clash/OpenClash configuration, restart services, change
-DNS settings, or modify system proxy settings.
+```bash
+netroute-diagnose --clash-config your-clash.yaml --offline --output report.html
+```
 
-本工具不会修改 Clash/OpenClash 配置、重启服务、更改 DNS 或修改系统代理设置。
+Omitting `--offline` enables DNS and configured egress checks from **this device**.
+默认 profile 使用系统 DNS 和 `https://api.ipify.org?format=json`；取消 `--offline`
+会从运行工具的设备发出请求，不代表路由器或所有 App 的出口。
 
-## Privacy and data flow / 隐私与数据流
+## Reading the report / 解读报告
 
-Clash/OpenClash rule parsing and report generation run locally. Configuration
-files and report contents are not uploaded, and NetRoute-Diagnose does not
-collect users' network configurations or provide a telemetry service.
+- **Policy target**: literal target of the candidate rule / 候选规则的策略目标。
+- **Static outbound**: DIRECT/REJECT only when supported by static evidence;
+  named targets remain UNKNOWN / 命名目标的最终出站未知。
+- **PASS / MISMATCH**: static evidence agrees/disagrees with the expectation;
+  neither proves runtime traffic / 仅对比静态证据与预期。
+- **UNCERTAIN**: earlier rules or a target require unsupported/runtime information.
+- **UNKNOWN**: no deterministic result, or no configured expectation.
 
-Clash/OpenClash 规则解析和报告生成在本地执行。配置文件及报告内容不会上传，
-NetRoute-Diagnose 不收集用户网络配置，也不提供遥测服务。
+`DOMAIN`, `DOMAIN-SUFFIX`, `DOMAIN-KEYWORD`, `MATCH` and `FINAL` have limited static
+support. All regex rules are **not executed**, preventing regex backtracking hangs.
+Other unsupported/malformed rules, rule providers, port/IP/process conditions and
+SUB-RULE branches conservatively reduce confidence. Main-list PASS continues;
+SUB-RULE is never flattened or simulated. Configured direct/global/rule modes are
+respected, but runtime mode changes and group selections are not observed.
 
-Online checks are optional and are skipped with `--offline`:
+正则、通配符、端口、规则集及子规则等未支持条件明确降级，不会跳过后报高置信度 PASS。
+内置 `COMPATIBLE` 按 DIRECT 解释。命名组即使只列有 DIRECT，也不推断运行态。
 
-- DNS checks send configured domain names to the system or explicitly
-  configured DNS resolver.
-- Egress IP checks make an HTTP(S) request to the configured public-IP service;
-  the default endpoint is `api.ipify.org`, which necessarily sees the request's
-  source IP and normal connection metadata.
-- These requests are used only to produce the diagnostic result. The tool does
-  not transmit configuration files or report contents. Results are written only
-  to the local output files selected by the user.
+Exit codes / 退出码：**0** no deterministic mismatch (may include uncertainty or
+network warnings), **1** argument/configuration/output error, **2** deterministic mismatch.
 
-在线检查是可选的，使用 `--offline` 时会跳过：
+## Privacy / 隐私
 
-- DNS 检测会把配置中的域名发送给系统 DNS 或用户明确指定的 DNS 解析器。
-- 出口 IP 检测会向配置的公网 IP 服务发起 HTTP(S) 请求；默认端点为
-  `api.ipify.org`，该服务必然能够看到请求源 IP 和常规连接元数据。
-- 这些请求仅用于生成诊断结果。工具不会传输配置文件或报告内容，结果只写入用户
-  指定的本地输出文件。
+No telemetry or uploads. Configuration and reports stay local. Online DNS queries
+send domain names to the selected resolver; HTTP(S) egress requests reveal normal
+request metadata and source IP to the chosen endpoint. `--offline` and `--demo`
+skip both. HTTP `direct` only disables application proxy settings, not TUN or transparent routing.
 
-| Operation / 操作 | Leaves the device / 离开本机的数据 | Destination / 目标 |
-|---|---|---|
-| Rule parsing / 规则解析 | None / 无 | Local only / 仅本地 |
-| DNS check / DNS 检测 | Domain name / 域名 | Configured DNS resolver / 配置的 DNS 解析器 |
-| Egress check / 出口检测 | Public-IP request metadata / 公网 IP 请求元数据 | Configured IP service / 配置的 IP 服务 |
-| HTML/JSON report / 报告 | None / 无 | User-selected local file / 用户指定的本地文件 |
+HTML and JSON share a redaction boundary: URL credentials, query values (except
+safe `format` values), nonstandard URL paths/fragments, recognized secrets and local
+paths are removed. Backend response/error bodies are not copied into reports.
+Domains, IPs and policy labels remain visible because they are diagnostic evidence;
+**review these before sharing**. Arbitrary personal labels cannot be automatically anonymized.
 
-Documentation: [中文](README.zh-CN.md) · [English](README.en.md) ·
-[Changelog](CHANGELOG.md) · License: [MIT](LICENSE)
+无遥测、无上传。HTML/JSON 使用同一脱敏出口；脱敏不等于匿名化，分享前仍需检查域名、
+IP 和自定义名称。在线检查仅接受 HTTP(S) endpoint，重定向也检查协议。
+
+## Development / 开发
+
+```bash
+python -m pip install -e .
+python -m unittest discover -s tests -v
+python -m pip install build
+python -m build
+python scripts/check_wheel.py
+```
+
+[Changelog](https://github.com/HHHTTT-1977/NetRoute-Diagnose/blob/main/CHANGELOG.md) · [MIT License](https://github.com/HHHTTT-1977/NetRoute-Diagnose/blob/main/LICENSE)

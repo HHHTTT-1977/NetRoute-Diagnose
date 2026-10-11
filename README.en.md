@@ -1,172 +1,93 @@
 # NetRoute-Diagnose
 
-[中文](README.zh-CN.md) · [Short overview](README.md)
+[中文](README.zh-CN.md) · [Overview](README.md)
 
-NetRoute-Diagnose is a read-only Python network path diagnostic tool for
-Clash, OpenClash, and Mihomo users. It helps answer “Why did this app domain go
-DIRECT or PROXY?” by combining first-match YAML rule analysis with optional DNS
-and egress observations in one standalone HTML report.
+Read-only rule diagnostics for Clash, OpenClash and Mihomo. Compare domain routing
+expectations against a local YAML configuration, locate candidate rules, and export
+standalone HTML/JSON. Policy targets and static outbound conclusions are separate.
+The tool does not observe app connections, switch groups, edit settings or restart services.
 
-## Start here
+## Install and get your first report
 
-- **What it solves:** an app domain is expected to go `DIRECT` or `PROXY`, but
-  its first matching Clash/OpenClash/Mihomo rule suggests otherwise.
-- **Who it is for:** users who want a clear DNS → rule → policy → egress report
-  instead of manually tracing long rule lists.
-- **How to begin:** install from PyPI when the release upload is available,
-  then run the included offline example. It does not send DNS or egress
-  requests.
+Python 3.10+ is required. This branch prepares **0.1.3rc1, an unpublished candidate**.
+PyPI 0.1.2 does not have `--demo`. To review the candidate, install its locally built
+or CI-produced wheel; running it does not require a Git checkout:
 
-DNS and egress are separate observations; the static rule result does not
-claim to observe the app's live connection.
+```bash
+python -m pip install /path/to/netroute_diagnose-0.1.3rc1-py3-none-any.whl
+```
 
-## Who it is for
-
-- Clash, Mihomo, and OpenClash users who do not want to inspect long rule lists
-- Users troubleshooting cases such as "WeChat works, but Google does not" or
-  an Apple service taking the wrong route
-- Anyone who wants a read-only summary of DNS, egress, and rule matches
-
-You only need a Clash/OpenClash YAML file. The tool does not ask for router
-credentials or change network state. Start with the offline demo below.
-
-## View the demo first
-
-The repository includes a [sanitized HTML demo report](docs/demo-report.html)
-generated entirely from synthetic configuration. It contains no real proxies,
-home-network addresses, usernames, or personal paths.
-
-![NetRoute-Diagnose demo report preview](docs/demo-preview.svg)
-
-![Sanitized CLI output preview](docs/cli-demo.svg)
-
-## Three common scenarios
-
-1. **WeChat unexpectedly uses a proxy.** Check whether a first-match rule
-   disagrees with the expected `DIRECT` path.
-2. **Apple, Google, or OpenAI takes the wrong route.** Start with the built-in
-   profiles to identify the relevant rule and its confidence.
-3. **You need to compare route assumptions with observed egress.** Compare
-   system, direct, or an explicit HTTP-proxy egress observation without
-   changing any network setting.
-
-## Quick start
-
-### Install from PyPI
-
-When the current release is available on PyPI, install it without Git or a
-development checkout:
+Replace the path with your downloaded wheel (also on Windows). After this feature
+has been formally released on PyPI, installation will be:
 
 ```bash
 python -m pip install --upgrade netroute-diagnose
 ```
 
-### Install the GitHub release source package
-
-The tagged source package remains available if you prefer that installation
-method:
+From any new directory, run this cross-platform, single-line command:
 
 ```bash
-python -m pip install "https://github.com/HHHTTT-1977/NetRoute-Diagnose/archive/refs/tags/v0.1.2.zip"
+netroute-diagnose --demo --output demo.html
 ```
 
-Run the fully offline example (it does not send DNS or egress requests):
+Double-click `demo.html`, or use your browser's **Open File** command. All inputs
+are bundled in the wheel; no `examples/` directory is needed. The demo is always
+**offline**. Expect 10 checks: 5 PASS and 5 UNCERTAIN, because the named group's
+runtime selection is unknown. Uncertainty is not an installation failure.
+`--demo` cannot be combined with `--config` or `--clash-config`.
 
 ```bash
-netroute-diagnose \
-  --config examples/diagnosis.yaml \
-  --clash-config examples/clash-config.yaml \
-  --offline \
-  --output reports/demo.html
+netroute-diagnose --demo --output demo.html --json-output demo.json
 ```
 
-Open `reports/demo.html` in a browser. The repository also includes a
-[sanitized demo report](docs/demo-report.html).
+## Your own configuration
 
-### Install from source for development
-
-Download or clone the repository, open its directory, and run:
+Run on your computer using a local copy of the **effective** Clash/OpenClash YAML.
+OpenClash overrides may make it different from the original subscription. This
+tool does not fetch router configuration or verify that the file matches runtime state.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
+netroute-diagnose --clash-config your-clash.yaml --offline --output report.html
 ```
 
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
+The bundled WeChat, Apple, Google and OpenAI expectations are editable examples,
+not comprehensive app health checks or universal routing recommendations.
+Without `--offline`, DNS and configured egress checks run from **this device**.
+The default profile uses system DNS and `https://api.ipify.org?format=json`.
 
-## Features
+## Report interpretation
 
-- Query A and AAAA records through the system resolver or explicit DNS servers
-- Observe public egress IPs through the system path, a proxy-free direct path,
-  or an explicit HTTP proxy
-- Parse `rules` from Clash/OpenClash YAML configurations
-- Deterministically analyze `DOMAIN`, `DOMAIN-SUFFIX`, `DOMAIN-KEYWORD`,
-  `DOMAIN-REGEX`, `MATCH`, and `FINAL`
-- Flag uncertainty introduced by `RULE-SET`, `GEOSITE`, `GEOIP`, IP, process,
-  and logical rules
-- Compare each app domain with its expected route and report `PASS`,
-  `MISMATCH`, `UNCERTAIN`, or `UNKNOWN`
-- Include built-in WeChat, Apple, Google, and OpenAI diagnostic profiles
-- Generate a standalone HTML report and optional JSON output
+| Field/status | Meaning |
+|---|---|
+| Policy target | Literal target of the candidate rule |
+| Static outbound | DIRECT/REJECT when supported; UNKNOWN otherwise, never observed app traffic |
+| PASS | Static evidence agrees with the expectation |
+| MISMATCH | Static evidence conflicts with the expectation |
+| UNCERTAIN | Earlier rules, branches or targets need unsupported/runtime information |
+| UNKNOWN | No deterministic result, or expectation is UNKNOWN |
 
-## Safety boundary
+Rule numbers are 1-based original YAML list positions. Earlier uncertain rules may
+intercept traffic before the displayed candidate.
 
-Phase one performs reads and network queries only:
+- Configured `rule` mode checks supported rules in order. Main-list PASS/PASS-RULE continues.
+- Configured `direct` mode bypasses rules and yields DIRECT; runtime mode is not observed.
+- Configured `global` mode targets GLOBAL, whose selection is unknown (UNCERTAIN).
+- Built-in DIRECT and COMPATIBLE classify as DIRECT; REJECT and REJECT-DROP as REJECT.
+- Named groups/nodes retain their names but have unknown outbound, even a group listing only DIRECT.
+- SUB-RULE stays uncertain and is never flattened: PASS has different branch-exit semantics inside it.
 
-- It does not edit Clash/OpenClash YAML.
-- It does not change subscriptions, proxies, rules, DNS, or system proxy state.
-- It does not call controller APIs to switch policies.
-- It does not restart Clash/OpenClash or system services.
-- It does not write to a router.
+Exit codes: **0** no deterministic mismatch (uncertainty/network warnings may remain),
+**1** argument/configuration/read/write error, **2** deterministic mismatch.
+Inspect JSON statuses and warnings for the full result.
 
-The rule path is a static inference from YAML. Egress IPs are observations from
-separate HTTP requests. They are different evidence, and the tool does not use
-DNS results or proxy names alone as proof of the actual runtime route.
+## Custom expectations and online checks
 
-## Requirements
-
-- Python 3.10 or newer
-- A readable Clash/OpenClash YAML configuration
-- Network access for online checks
-
-Use the built-in app profile and run online checks:
-
-```bash
-netroute-diagnose \
-  --clash-config your-clash.yaml \
-  --output reports/network-report.html
-```
-
-Add machine-readable output:
-
-```bash
-netroute-diagnose \
-  --clash-config your-clash.yaml \
-  --output reports/network-report.html \
-  --json-output reports/network-report.json
-```
-
-The command exits with status `2` when deterministic mismatches exist, `1` for
-configuration or runtime errors, and `0` otherwise.
-
-### Three useful terms
-
-- `DIRECT`: the request is not sent to a proxy policy group.
-- `PROXY`: the request is sent to a named policy group; that group may still
-  select `DIRECT` at runtime.
-- Static analysis: the tool follows YAML rule order but does not observe the
-  app's live connection.
-
-## Custom profile
-
-Copy `examples/diagnosis.yaml` and adapt domains and expectations:
+Save this as `diagnosis.yaml`; no repository example file is required:
 
 ```yaml
 dns:
   nameservers: []
   timeout: 3
-
 egress:
   endpoint: https://api.ipify.org?format=json
   timeout: 5
@@ -174,100 +95,60 @@ egress:
     - name: system-route
       mode: system
       enabled: true
-    - name: clash-http-proxy
-      mode: proxy
-      proxy_url: http://127.0.0.1:7890
-      enabled: true
-
 apps:
   - name: My App
     domains:
       - domain: example.com
         expected: DIRECT
-      - domain: api.example.net
-        expected: PROXY
 ```
 
-Allowed `expected` values are `DIRECT`, `PROXY`, `REJECT`, and `UNKNOWN`. A
-named policy group such as `Proxy`, `Auto Select`, or `Apple` is statically
-classified as `PROXY`. The analyzer cannot know whether that group currently
-selects `DIRECT`, so combine the report with egress observations and runtime
-Clash/OpenClash logs.
+```bash
+netroute-diagnose --config diagnosis.yaml --clash-config your-clash.yaml --offline --output report.html
+```
 
-Egress modes:
+Expectations accept DIRECT, PROXY, REJECT or UNKNOWN. This version cannot confirm
+PROXY from a named target alone. Domains must be strings, timeouts positive finite
+numbers, and nameservers a list of IP address strings.
 
-- `system` honors proxy settings visible to the Python process.
-- `direct` disables HTTP(S) proxy handling for the request.
-- `proxy` uses the HTTP proxy specified by `proxy_url`.
+Egress `system` follows process-visible proxy settings; `direct` disables HTTP(S)
+proxy settings but does not bypass TUN, transparent interception or upstream routing;
+`proxy` uses an explicit HTTP(S) `proxy_url`. Endpoints and redirects must use HTTP(S).
 
-## Reading the report
+System DNS uses OS resolver deadlines: **dns.timeout does not bound getaddrinfo**.
+With an explicit resolver, the timeout applies separately to sequential A and AAAA
+queries. Partial failures remain visible alongside successful addresses. DNS and
+public-IP results are independent observations; neither proves an app's route.
 
-- `PASS`: the deterministic first match agrees with the expectation.
-- `MISMATCH`: the deterministic first match conflicts with the expectation.
-- `UNCERTAIN`: a later match was found, but an earlier rule needs provider,
-  IP, process, or other runtime context.
-- `UNKNOWN`: no deterministic match exists, or the expectation is unknown.
+## Limits and privacy
 
-The report includes the one-based rule number, complete rule text, policy
-target, and confidence.
+Limited static support covers DOMAIN, DOMAIN-SUFFIX, DOMAIN-KEYWORD, MATCH and FINAL.
+All DOMAIN-REGEX rules are **not executed, compiled or rewritten**: without a bounded,
+Mihomo-compatible evaluator they stay uncertain, including `\D`, invalid expressions
+and backtracking hazards. DOMAIN-WILDCARD, DST-PORT, IP/process conditions, rule sets,
+logical rules and subrules are not simulated. Unsupported/malformed earlier rules
+cannot silently produce a high-confidence result. No controller or remote providers are queried.
 
-## Known limitations
+There is no telemetry, upload or hosted backend. Online DNS sends domain names to
+the selected resolver; egress requests expose normal metadata/source IP to the chosen
+HTTP(S) endpoint. `--offline` and `--demo` skip both.
 
-- Remote `rule-providers` are not downloaded or expanded.
-- DNS-to-`IP-CIDR`/`GEOIP` matching is not simulated.
-- Live controller connections, policy selections, and script results are not
-  inspected.
-- A named proxy group can select `DIRECT` at runtime.
-- A successful DNS query does not prove application traffic uses that path.
-- An egress service only proves the route of that individual request.
-
-These cases produce limited confidence or uncertainty instead of being
-presented as confirmed runtime routing.
-
-## Privacy
-
-- Clash/OpenClash YAML parsing, rule matching, and HTML/JSON report generation
-  run locally.
-- Configuration files and report contents are not uploaded. NetRoute-Diagnose
-  does not collect users' network configurations and does not provide a
-  telemetry or hosted backend service.
-- Online checks are optional and are completely skipped with `--offline`.
-- DNS checks send each configured domain name to the system resolver or the DNS
-  server explicitly selected in the diagnostic profile.
-- Egress IP checks make an HTTP(S) request to the configured public-IP service.
-  The default endpoint is `api.ipify.org`; like any public-IP service, it
-  necessarily sees the request's source IP and normal connection metadata.
-- Online requests are used only to produce diagnostic results. The tool does
-  not transmit configuration files or report contents. Results are kept in the
-  local process and written only to output files selected by the user.
-- External resolvers and IP services may process or log requests under their
-  own policies. Choose endpoints you trust or use `--offline`.
-- HTML and JSON reports record configuration filenames, not absolute paths.
-- `127.0.0.1` in examples is the standard loopback address.
-- Tests use the documentation-only ranges `192.0.2.0/24`, `203.0.113.0/24`,
-  and `2001:db8::/32`.
-- Before publishing an issue, still review domains, rule names, and observed
-  egress IPs in your own report.
-
-### Data Flow
-
-| Operation | Data leaving the device | Destination | Local output |
-|---|---|---|---|
-| Clash rule parsing | None | Local process only | Match results |
-| DNS check | Configured domain name | System or configured DNS resolver | Resolved addresses and errors |
-| Egress IP check | HTTP(S) request metadata, including source IP | Configured IP service; default `api.ipify.org` | Observed public IP or error |
-| HTML/JSON generation | None | User-selected local path | Standalone report file |
+HTML, JSON and embedded diagnostic data use the same redaction boundary: URL
+userinfo, query values (except safe format values), nonstandard URL paths/fragments,
+recognized credentials and local paths are removed. Backend errors and response
+bodies are not copied to reports. Domains, IPs, rule numbers and policy labels remain
+useful evidence. **Review these before sharing**; arbitrary personal labels cannot
+be automatically anonymized.
 
 ## Development
 
 ```bash
+python -m pip install -e .
 python -m unittest discover -s tests -v
+python -m pip install build
+python -m build
+python scripts/check_wheel.py
 ```
 
-The project uses a `src` layout. Configuration, DNS, egress observation, rule
-analysis, orchestration, and HTML rendering are separated into focused modules.
-Issues and pull requests are welcome.
-
-## License
-
-[MIT License](LICENSE)
+Final-wheel validation creates a fresh venv and empty directory, runs the README
+Demo, checks HTML/JSON, and runs tests against the installed wheel.
+[Changelog](CHANGELOG.md) · [Security](SECURITY.md) · [MIT](LICENSE)

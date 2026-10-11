@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from .models import DiagnosticReport
 
@@ -16,6 +17,14 @@ def _badge(status: str) -> str:
 
 
 def render_html(report: DiagnosticReport) -> str:
+    data = report.to_dict()
+    def view(value):
+        if isinstance(value, dict):
+            return SimpleNamespace(**{k: view(v) for k, v in value.items()})
+        if isinstance(value, list):
+            return [view(v) for v in value]
+        return value
+    report = view(data)
     counts = {
         status: sum(check.status == status for check in report.domain_checks)
         for status in ("PASS", "MISMATCH", "UNCERTAIN", "UNKNOWN")
@@ -28,7 +37,7 @@ def render_html(report: DiagnosticReport) -> str:
         route_rows.append(
             "<tr>"
             f"<td>{_e(check.app)}</td><td><code>{_e(check.domain)}</code></td>"
-            f"<td>{_e(check.expected)}</td><td>{_e(check.actual)}</td>"
+            f"<td>{_e(check.expected)}</td><td>{_e(match.policy or '—')}</td><td>{_e(check.actual)}</td>"
             f"<td>{_badge(check.status)}</td><td>{_e(match.confidence)}</td>"
             f"<td>#{_e(rule_number)} <code>{_e(match.rule or 'No deterministic match')}</code></td>"
             f"<td>{notes}</td></tr>"
@@ -49,7 +58,7 @@ def render_html(report: DiagnosticReport) -> str:
         for item in report.egress_results
     ]
     warning_items = "".join(f"<li>{_e(item)}</li>" for item in report.warnings)
-    raw_json = html.escape(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+    raw_json = html.escape(json.dumps(data, ensure_ascii=False, indent=2))
 
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -83,6 +92,9 @@ def render_html(report: DiagnosticReport) -> str:
 <body><main>
   <h1>NetRoute-Diagnose</h1>
   <p class="sub">Generated {_e(report.generated_at)} · Static rule analysis is not proof of runtime routing.</p>
+  <p>配置模式 / Configured mode: {_e(getattr(report.metadata, "mode", "unknown"))}. Runtime mode and group selection are not observed.
+  UNKNOWN outbound means the target is known but its final route is not. PASS compares static evidence only.
+  / 未观测运行态；命名目标不代表最终出站，PASS 仅表示静态证据符合预期。</p>
   <section class="grid">
     <div class="card metric"><strong>{counts['PASS']}</strong><span>PASS</span></div>
     <div class="card metric"><strong>{counts['MISMATCH']}</strong><span>MISMATCH</span></div>
@@ -90,8 +102,8 @@ def render_html(report: DiagnosticReport) -> str:
     <div class="card metric"><strong>{counts['UNKNOWN']}</strong><span>UNKNOWN</span></div>
   </section>
   <section class="card"><h2>Rule path checks / 规则路径检查</h2><div class="table-wrap">
-    <table><thead><tr><th>App</th><th>Domain</th><th>Expected</th><th>Actual</th>
-    <th>Status</th><th>Confidence</th><th>Matched rule</th><th>Notes</th></tr></thead>
+    <table><thead><tr><th>App</th><th>Domain</th><th>Expected</th><th>Policy target</th><th>Static outbound</th>
+    <th>Status</th><th>Confidence</th><th>Candidate rule</th><th>Notes</th></tr></thead>
     <tbody>{''.join(route_rows)}</tbody></table></div></section>
   <section class="card"><h2>DNS checks / DNS 检测</h2><div class="table-wrap">
     <table><thead><tr><th>Domain</th><th>Resolver</th><th>Addresses</th>
@@ -102,7 +114,7 @@ def render_html(report: DiagnosticReport) -> str:
     <th>ms</th><th>Error</th></tr></thead><tbody>{''.join(egress_rows) or '<tr><td colspan="6">Skipped</td></tr>'}</tbody>
     </table></div></section>
   <section class="card"><h2>Warnings / 警告</h2><ul>{warning_items or '<li>None</li>'}</ul></section>
-  <section class="card"><details><summary>Raw diagnostic data / 原始诊断数据</summary>
+  <section class="card"><details><summary>Sanitized diagnostic data / 脱敏诊断数据</summary>
     <pre>{raw_json}</pre></details></section>
 </main></body></html>"""
 

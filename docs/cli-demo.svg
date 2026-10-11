@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330" role="img" aria-labelledby="title desc">
   <title id="title">Sanitized NetRoute-Diagnose CLI output</title>
-  <desc id="desc">A sample offline diagnostic command completes with ten passing checks and writes local HTML and JSON reports.</desc>
+  <desc id="desc">A sample offline diagnostic command completes with five passing and five uncertain checks and writes local HTML and JSON reports.</desc>
   <rect width="1200" height="330" rx="18" fill="#0f172a"/>
   <circle cx="42" cy="38" r="10" fill="#fb7185"/><circle cx="72" cy="38" r="10" fill="#fbbf24"/><circle cx="102" cy="38" r="10" fill="#4ade80"/>
   <text x="140" y="45" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20">NetRoute-Diagnose · offline example</text>
   <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="21">
-    <text x="42" y="96" fill="#86efac">$</text><text x="70" y="96" fill="#e2e8f0">netroute-diagnose --clash-config examples/clash-config.yaml --offline</text>
+    <text x="42" y="96" fill="#86efac">$</text><text x="70" y="96" fill="#e2e8f0">netroute-diagnose --demo</text>
     <text x="70" y="128" fill="#e2e8f0">--output reports/demo.html --json-output reports/demo.json</text>
     <text x="42" y="184" fill="#67e8f9">INFO</text><text x="112" y="184" fill="#cbd5e1">Offline mode: DNS and egress checks skipped</text>
-    <text x="42" y="220" fill="#4ade80">PASS</text><text x="112" y="220" fill="#cbd5e1">10 checks completed · 0 deterministic mismatches</text>
+    <text x="42" y="220" fill="#4ade80">PASS</text><text x="112" y="220" fill="#cbd5e1">5 PASS · 5 UNCERTAIN · 0 deterministic mismatches</text>
     <text x="42" y="256" fill="#a5b4fc">HTML</text><text x="112" y="256" fill="#cbd5e1">Local report written: reports/demo.html</text>
     <text x="42" y="292" fill="#a5b4fc">JSON</text><text x="112" y="292" fill="#cbd5e1">Local report written: reports/demo.json</text>
   </g>
