@@ -225,10 +225,11 @@ class PrivacyAndNetworkTests(unittest.TestCase):
         report=DiagnosticReport('now','config.yaml','clash.yaml',False,
             egress_results=[EgressResult('demo','system',url,error='Authorization: Bearer FAKE_HEADER_TOKEN')],
             warnings=['/home/FAKE_ACCOUNT/private/file',r'C:\Users\FAKE_WINDOWS\secret.txt', r'C:\Program Files\FAKE_SPACED_PATH\app',
-                      'token=FAKE_ASSIGN_TOKEN', secret],sensitive_values=[secret])
+                      'token=FAKE_ASSIGN_TOKEN', 'Authorization: Basic FAKE_BASIC_SECRET',
+                      '"password": "FAKE_JSON_SECRET"', secret],sensitive_values=[secret])
         for output in [json.dumps(report.to_dict()),render_html(report)]:
             for marker in ['FAKE_USER','FAKE_PASSWORD','FAKE_PATH_TOKEN','FAKE_QUERY_TOKEN','FAKE_FRAGMENT',
-                           'FAKE_HEADER_TOKEN','FAKE_ACCOUNT','FAKE_WINDOWS','FAKE_SPACED_PATH','FAKE_ASSIGN_TOKEN',secret]:
+                           'FAKE_HEADER_TOKEN','FAKE_ACCOUNT','FAKE_WINDOWS','FAKE_SPACED_PATH','FAKE_ASSIGN_TOKEN','FAKE_BASIC_SECRET','FAKE_JSON_SECRET',secret]:
                 self.assertNotIn(marker,output)
             self.assertIn('example.invalid',output)
             self.assertIn('format=json',output)

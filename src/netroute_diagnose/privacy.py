@@ -11,7 +11,7 @@ from typing import Any
 _SECRET_KEY = re.compile(r'password|passwd|token|secret|authorization|api[-_]?key|credential', re.I)
 _URL = re.compile(r'[a-zA-Z][a-zA-Z0-9+.-]*://[^\s<>\"\']+')
 _PATH = re.compile(r'(?<![\w:])(?:[A-Za-z]:[\\/]|\\\\|/)[^\r\n<>\"\',;]+')
-_ASSIGNMENT = re.compile(r'(?i)((?:password|passwd|token|secret|api[-_]?key|authorization)\s*[:=]\s*)(?:\"[^\"]*\"|\'[^\']*\'|[^\s,;]+)')
+_ASSIGNMENT = re.compile(r'(?i)((?:password|passwd|token|secret|api[-_]?key|authorization)[\"\']?\s*[:=]\s*)(?:\"[^\"]*\"|\'[^\']*\'|[^\s,;]+)')
 
 
 def collect_secrets(value: Any) -> list[str]:
@@ -72,7 +72,7 @@ def sanitize_text(value: str, secrets: list[str] | tuple[str, ...] = ()) -> str:
         return f'\x00URL{len(urls)-1}\x00'
     value = _URL.sub(replace_url, value)
     value = _PATH.sub('[redacted-path]', value)
-    value = re.sub(r'(?i)\bBearer\s+[^\s,;]+', 'Bearer [redacted]', value)
+    value = re.sub(r'(?i)\b(Bearer|Basic)\s+[^\s,;]+', r'\1 [redacted]', value)
     value = _ASSIGNMENT.sub(lambda m: m.group(1) + '[redacted]', value)
     for index, url in enumerate(urls):
         value = value.replace(f'\x00URL{index}\x00', url)
