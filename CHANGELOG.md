@@ -12,7 +12,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Runtime controller integration with an explicit read-only mode
 - Additional Clash rule types and rule-provider inspection
 
-## 0.1.3rc1 - Unreleased candidate
+## 0.1.3 - 2026-10-12
 
 ### Fixed
 
@@ -29,6 +29,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
   for deterministic mismatches); reject output paths that overwrite input files.
 - Preserve partial DNS failures and document OS-controlled system DNS timeouts.
 - Raise dnspython minimum to 2.6.1 (CVE-2023-29483 advisory; supports Python 3.10).
+- Decode demo HTML and JSON as UTF-8 in regression tests on Windows.
 
 ### Added
 
@@ -42,7 +43,6 @@ and this project follows [Semantic Versioning](https://semver.org/).
   The bundled demo intentionally reports 5 PASS and 5 UNCERTAIN.
 - Regex, wildcard, port, provider, logical and subrule evaluation remains unsupported.
 - Redaction preserves domains/IPs/policy labels; review reports before sharing.
-- This candidate has not been tagged, released or uploaded to PyPI.
 
 ## 0.1.2 - 2026-08-21
 

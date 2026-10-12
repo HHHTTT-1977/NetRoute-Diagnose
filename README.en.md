@@ -9,19 +9,11 @@ The tool does not observe app connections, switch groups, edit settings or resta
 
 ## Install and get your first report
 
-Python 3.10+ is required. This branch prepares **0.1.3rc1, an unpublished candidate**.
-PyPI 0.1.2 does not have `--demo`. To review the candidate, install its locally built
-or CI-produced wheel; running it does not require a Git checkout:
+Python 3.10+ is required. For **v0.1.3**, install from PyPI after the GitHub
+Release has published and its PyPI upload has completed; no Git checkout is needed:
 
 ```bash
-python -m pip install /path/to/netroute_diagnose-0.1.3rc1-py3-none-any.whl
-```
-
-Replace the path with your downloaded wheel (also on Windows). After this feature
-has been formally released on PyPI, installation will be:
-
-```bash
-python -m pip install --upgrade netroute-diagnose
+python -m pip install netroute-diagnose==0.1.3
 ```
 
 From any new directory, run this cross-platform, single-line command:

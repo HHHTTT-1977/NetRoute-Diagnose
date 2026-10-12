@@ -9,17 +9,11 @@
 
 ## 安装与第一个报告
 
-需要 Python 3.10+。当前分支准备 **0.1.3rc1 候选版，尚未发布**；PyPI 0.1.2 没有
-`--demo`。评审候选版时安装本地构建或 CI 产出的 wheel，无需克隆仓库来运行：
+需要 Python 3.10+。**v0.1.3** 的 GitHub Release 发布且 PyPI 上传完成后，
+可安装正式发行包，无需克隆仓库：
 
 ```bash
-python -m pip install /path/to/netroute_diagnose-0.1.3rc1-py3-none-any.whl
-```
-
-请将路径替换为自己下载的 wheel，Windows 同样适用。该功能正式发布到 PyPI 后：
-
-```bash
-python -m pip install --upgrade netroute-diagnose
+python -m pip install netroute-diagnose==0.1.3
 ```
 
 进入任意新目录，执行这个跨平台单行命令：

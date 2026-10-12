@@ -14,20 +14,15 @@ DNS and egress checks are optional, independent observations from the device run
 
 ## Quick Start / 快速开始
 
-This branch prepares **0.1.3rc1**, an unpublished candidate. PyPI **0.1.2 does not
-support `--demo`**. To review this candidate, install its locally built or CI-produced
-wheel (replace the path with the downloaded wheel):
+Python 3.10+ is required. For **v0.1.3**, install from PyPI after the GitHub
+Release has published and its PyPI upload has completed:
 
 ```bash
-python -m pip install /path/to/netroute_diagnose-0.1.3rc1-py3-none-any.whl
+python -m pip install netroute-diagnose==0.1.3
 ```
 
-当前分支是尚未发布的候选版。评审时安装构建产出的 wheel；无需克隆仓库来运行。
-Windows 用户请替换为自己的 wheel 文件路径。候选功能正式发布到 PyPI 后，可使用：
-
-```bash
-python -m pip install --upgrade netroute-diagnose
-```
+需要 Python 3.10+。**v0.1.3** 的 GitHub Release 发布且 PyPI 上传完成后，
+可直接使用上述命令安装，无需克隆仓库。
 
 From any new directory, run this **fully offline** example; all inputs are bundled:
 在任意新目录执行下列命令；示例随包安装，不需要 `examples/`，不会发送网络请求：
