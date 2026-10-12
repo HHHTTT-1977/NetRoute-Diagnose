@@ -12,6 +12,38 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Runtime controller integration with an explicit read-only mode
 - Additional Clash rule types and rule-provider inspection
 
+## 0.1.3 - 2026-10-12
+
+### Fixed
+
+- Unsupported/malformed earlier rules now reduce confidence; main-list PASS
+  continues, while SUB-RULE remains uncertain instead of being flattened.
+- All DOMAIN-REGEX evaluation is disabled: expressions are neither rewritten nor
+  executed without a bounded, compatible engine, preventing backtracking hangs.
+- Separate literal policy targets from unknown named-target outbounds; respect
+  configured direct/global/rule modes and built-in COMPATIBLE semantics.
+- Restrict egress endpoints and redirects to HTTP(S); omit backend response/error
+  bodies and redact credentials, URL values and local paths through one shared
+  HTML/JSON serialization boundary.
+- Validate configuration types; use exit 1 for argument errors (2 remains reserved
+  for deterministic mismatches); reject output paths that overwrite input files.
+- Preserve partial DNS failures and document OS-controlled system DNS timeouts.
+- Raise dnspython minimum to 2.6.1 (CVE-2023-29483 advisory; supports Python 3.10).
+- Decode demo HTML and JSON as UTF-8 in regression tests on Windows.
+
+### Added
+
+- Bundled, always-offline `--demo`, runnable after wheel installation without a checkout.
+- Regression tests and final-wheel empty-directory README validation on Linux,
+  Windows and macOS, also required before the publishing job can run.
+
+### Compatibility and limits
+
+- Named targets now yield UNKNOWN outbound / UNCERTAIN status instead of PROXY.
+  The bundled demo intentionally reports 5 PASS and 5 UNCERTAIN.
+- Regex, wildcard, port, provider, logical and subrule evaluation remains unsupported.
+- Redaction preserves domains/IPs/policy labels; review reports before sharing.
+
 ## 0.1.2 - 2026-08-21
 
 ### Added

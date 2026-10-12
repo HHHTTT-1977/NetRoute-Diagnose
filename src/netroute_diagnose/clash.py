@@ -1,130 +1,93 @@
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import Any
 
 from .config import ConfigError, load_yaml
 from .models import RuleMatch
+from .privacy import collect_secrets
 
-DOMAIN_RULES = {"DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD", "DOMAIN-REGEX"}
-UNCERTAIN_RULES = {
-    "RULE-SET",
-    "GEOSITE",
-    "GEOIP",
-    "IP-CIDR",
-    "IP-CIDR6",
-    "SRC-IP-CIDR",
-    "PROCESS-NAME",
-    "PROCESS-PATH",
-    "NETWORK",
-    "AND",
-    "OR",
-    "NOT",
-    "SUB-RULE",
-}
+DOMAIN_RULES = {'DOMAIN', 'DOMAIN-SUFFIX', 'DOMAIN-KEYWORD'}
 
 
 def load_clash_rules(path: str | Path) -> tuple[list[str], dict[str, Any]]:
     data = load_yaml(path)
-    rules = data.get("rules", [])
-    if not isinstance(rules, list):
-        raise ConfigError(f"'rules' must be a list in {path}")
-    cleaned = [str(rule).strip() for rule in rules if str(rule).strip()]
-    metadata = {
-        "proxy_count": len(data.get("proxies", []) or []),
-        "proxy_group_count": len(data.get("proxy-groups", []) or []),
-        "rule_count": len(cleaned),
-        "rule_provider_count": len(data.get("rule-providers", {}) or {}),
-    }
-    return cleaned, metadata
+    rules = data.get('rules', [])
+    if not isinstance(rules, list) or any(not isinstance(r, str) for r in rules):
+        raise ConfigError("Clash 'rules' must be a list of strings")
+    mode = data.get('mode', 'rule')
+    if not isinstance(mode, str) or mode.lower() not in {'rule', 'direct', 'global'}:
+        raise ConfigError("Clash 'mode' must be rule, direct or global")
+    metadata: dict[str, Any] = {'mode': mode.lower(), 'rule_count': len(rules)}
+    for key, label, kind in [('proxies', 'proxy_count', list),
+                             ('proxy-groups', 'proxy_group_count', list),
+                             ('rule-providers', 'rule_provider_count', dict)]:
+        value = data.get(key, kind())
+        if value is None:
+            value = kind()
+        if not isinstance(value, kind):
+            raise ConfigError(f"Invalid Clash '{key}' container")
+        metadata[label] = len(value)
+    metadata['_secrets'] = collect_secrets(data)
+    # Keep original positions, including blank/invalid rules, for report numbering.
+    return rules, metadata
 
 
 def classify_policy(policy: str | None) -> str:
-    if not policy:
-        return "UNKNOWN"
-    normalized = policy.strip().upper()
-    if normalized == "DIRECT":
-        return "DIRECT"
-    if normalized in {"REJECT", "REJECT-DROP"}:
-        return "REJECT"
-    if normalized in {"PASS", "COMPATIBLE"}:
-        return "UNKNOWN"
-    return "PROXY"
-
-
-def _parse_rule(rule: str) -> tuple[str, str | None, str | None]:
-    parts = [part.strip() for part in rule.split(",")]
-    kind = parts[0].upper() if parts else ""
-    if kind in {"MATCH", "FINAL"}:
-        return kind, None, parts[1] if len(parts) > 1 else None
-    value = parts[1] if len(parts) > 1 else None
-    policy = parts[2] if len(parts) > 2 else None
-    return kind, value, policy
+    # Built-in names are case-sensitive. A named target is not a runtime choice.
+    if policy in {'DIRECT', 'COMPATIBLE'}:
+        return 'DIRECT'
+    if policy in {'REJECT', 'REJECT-DROP'}:
+        return 'REJECT'
+    return 'UNKNOWN'
 
 
 def _domain_matches(kind: str, value: str, domain: str) -> bool:
-    domain = domain.lower().rstrip(".")
-    value = value.lower().lstrip("+.").rstrip(".")
-    if kind == "DOMAIN":
+    domain = domain.lower().rstrip('.')
+    value = value.lower().rstrip('.')
+    if kind == 'DOMAIN':
         return domain == value
-    if kind == "DOMAIN-SUFFIX":
-        return domain == value or domain.endswith(f".{value}")
-    if kind == "DOMAIN-KEYWORD":
-        return value in domain
-    if kind == "DOMAIN-REGEX":
-        try:
-            return re.search(value, domain, flags=re.IGNORECASE) is not None
-        except re.error:
-            return False
-    return False
+    if kind == 'DOMAIN-SUFFIX':
+        return domain == value or domain.endswith('.' + value)
+    return value in domain
 
 
-def match_domain(domain: str, rules: list[str]) -> RuleMatch:
-    uncertain_before_match: list[str] = []
-    invalid_rules: list[str] = []
+def match_domain(domain: str, rules: list[str], mode: str = 'rule') -> RuleMatch:
+    if mode == 'direct':
+        return RuleMatch(domain, policy='DIRECT', route_class='DIRECT', confidence='high',
+                         notes=['Configured direct mode bypasses rules; runtime mode is not observed.'])
+    if mode == 'global':
+        return RuleMatch(domain, policy='GLOBAL', confidence='limited',
+                         notes=['Configured global mode bypasses rules; GLOBAL selection is unknown.'])
+    if mode != 'rule':
+        return RuleMatch(domain, confidence='limited', notes=['Unsupported routing mode.'])
 
-    for index, raw_rule in enumerate(rules):
-        kind, value, policy = _parse_rule(raw_rule)
-        matched = False
-
-        if kind in DOMAIN_RULES:
-            if value is None or policy is None:
-                invalid_rules.append(f"Rule #{index + 1} is incomplete")
-                continue
-            matched = _domain_matches(kind, value, domain)
-        elif kind in {"MATCH", "FINAL"}:
-            matched = policy is not None
-        elif kind in UNCERTAIN_RULES:
-            uncertain_before_match.append(f"#{index + 1} {raw_rule}")
+    notes: list[str] = []
+    uncertain = False
+    for index, raw in enumerate(rules):
+        parts = [p.strip() for p in raw.split(',')]
+        kind = parts[0]
+        expected_parts = 2 if kind in {'MATCH', 'FINAL'} else 3
+        if kind not in DOMAIN_RULES | {'MATCH', 'FINAL'}:
+            uncertain = True
+            reason = ('DOMAIN-REGEX is not executed: no bounded Mihomo-compatible evaluator'
+                      if kind == 'DOMAIN-REGEX' else 'unsupported rule or missing runtime context')
+            # Do not echo arbitrary payloads (process paths, regexes, tokens).
+            notes.append(f'Rule #{index + 1}: {reason}.')
             continue
-        else:
-            invalid_rules.append(f"Rule #{index + 1} uses unsupported type '{kind}'")
+        if len(parts) != expected_parts or any(not p for p in parts):
+            uncertain = True
+            notes.append(f'Rule #{index + 1}: malformed or unsupported rule parameters.')
             continue
-
-        if matched:
-            notes = invalid_rules.copy()
-            confidence = "high"
-            if uncertain_before_match:
-                confidence = "limited"
-                notes.append(
-                    "Earlier rules require runtime context or rule-provider data and "
-                    "could take precedence: " + "; ".join(uncertain_before_match[:5])
-                )
-            return RuleMatch(
-                domain=domain,
-                rule_index=index,
-                rule=raw_rule,
-                policy=policy,
-                route_class=classify_policy(policy),
-                confidence=confidence,
-                notes=notes,
-            )
-
-    notes = invalid_rules
-    if uncertain_before_match:
-        notes.append(
-            "No deterministic domain rule matched; runtime-dependent candidates: "
-            + "; ".join(uncertain_before_match[:5])
-        )
-    return RuleMatch(domain=domain, notes=notes)
+        policy = parts[-1]
+        if kind in DOMAIN_RULES and not _domain_matches(kind, parts[1], domain):
+            continue
+        if policy in {'PASS', 'PASS-RULE'}:
+            notes.append(f'Rule #{index + 1}: {policy} continues in the main rule list.')
+            continue
+        route = classify_policy(policy)
+        if route == 'UNKNOWN':
+            notes.append('Named/unrecognized policy target: final outbound and continuation are unknown.')
+        return RuleMatch(domain, index, raw, policy, route,
+                         'limited' if uncertain or route == 'UNKNOWN' else 'high', notes)
+    return RuleMatch(domain, confidence='limited' if uncertain else 'none', notes=notes)

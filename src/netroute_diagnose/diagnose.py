@@ -9,6 +9,7 @@ from .config import load_diagnostic_config
 from .dns import resolve_domain
 from .egress import detect_egress
 from .models import DiagnosticReport, DomainCheck
+from .privacy import collect_secrets
 
 
 def _domain_inventory(config: dict[str, Any]) -> list[str]:
@@ -36,18 +37,19 @@ def run_diagnostics(
         source_config=Path(diagnostic_config).name,
         clash_config=Path(clash_config).name,
         offline=offline,
+        sensitive_values=clash_metadata.pop("_secrets") + collect_secrets(config),
         metadata=clash_metadata,
     )
 
     for app in config["apps"]:
         for item in app["domains"]:
-            rule_match = match_domain(item["domain"], rules)
+            rule_match = match_domain(item["domain"], rules, mode=clash_metadata["mode"])
             expected = item["expected"]
             actual = rule_match.route_class
-            if actual == "UNKNOWN" or expected == "UNKNOWN":
-                status = "UNKNOWN"
-            elif rule_match.confidence == "limited":
+            if rule_match.confidence == "limited":
                 status = "UNCERTAIN"
+            elif actual == "UNKNOWN" or expected == "UNKNOWN":
+                status = "UNKNOWN"
             elif actual == expected:
                 status = "PASS"
             else:
@@ -69,9 +71,15 @@ def run_diagnostics(
         )
         return report
 
+    report.warnings.append(
+        "DNS and egress are independent observations from this device. An IP-service request "
+        "does not establish an app domain route; direct HTTP mode does not bypass TUN or transparent proxies."
+    )
     dns_config = config.get("dns", {})
     nameservers = dns_config.get("nameservers") or [None]
     timeout = float(dns_config.get("timeout", 3))
+    if nameservers == [None]:
+        report.warnings.append("System DNS uses OS resolver timeouts; dns.timeout does not bound getaddrinfo.")
     for domain in domains:
         for nameserver in nameservers:
             report.dns_results.append(

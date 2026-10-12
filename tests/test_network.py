@@ -13,6 +13,9 @@ class _FakeResponse:
     def __exit__(self, *_args):
         return None
 
+    def geturl(self):
+        return "https://example.invalid/ip"
+
     def read(self, _limit):
         return b'{"ip":"203.0.113.8"}'
 

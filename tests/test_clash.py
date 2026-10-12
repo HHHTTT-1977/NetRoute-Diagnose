@@ -23,11 +23,12 @@ class ClashRuleTests(unittest.TestCase):
     def test_rule_provider_reduces_confidence(self):
         rules = ["RULE-SET,apple,DIRECT", "DOMAIN-SUFFIX,apple.com,PROXY"]
         result = match_domain("apple.com", rules)
-        self.assertEqual(result.route_class, "PROXY")
+        self.assertEqual(result.policy, "PROXY")
+        self.assertEqual(result.route_class, "UNKNOWN")
         self.assertEqual(result.confidence, "limited")
 
-    def test_named_group_is_proxy(self):
-        self.assertEqual(classify_policy("Auto Select"), "PROXY")
+    def test_named_group_has_unknown_outbound(self):
+        self.assertEqual(classify_policy("Auto Select"), "UNKNOWN")
         self.assertEqual(classify_policy("REJECT"), "REJECT")
 
 
