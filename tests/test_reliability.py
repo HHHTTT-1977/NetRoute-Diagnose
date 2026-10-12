@@ -145,11 +145,11 @@ class ConfigAndCLITests(unittest.TestCase):
             self.assertEqual(self.run_cli('--demo','--output',str(self.root/'demo.html'),
                                           '--json-output',str(self.root/'demo.json'))[0],0)
             run_diagnostics(self.diag,self.clash,offline=True)
-        report=json.loads((self.root/'demo.json').read_text())
+        report=json.loads((self.root/'demo.json').read_text(encoding='utf-8'))
         self.assertTrue(report['offline'])
         self.assertEqual(len(report['domain_checks']),10)
         self.assertEqual(report['dns_results'],[])
-        self.assertIn('<!doctype html>',(self.root/'demo.html').read_text())
+        self.assertIn('<!doctype html>',(self.root/'demo.html').read_text(encoding='utf-8'))
 
     def test_config_credentials_redacted_from_other_report_fields(self):
         self.base['egress'] = {'endpoint':'https://FAKE_USER:FAKE_PASS@example.invalid/ip?token=FAKE_TOKEN', 'checks':[]}
